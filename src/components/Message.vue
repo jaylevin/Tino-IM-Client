@@ -1,17 +1,23 @@
 <template>
-	<div class="message-element">
-		<figure :class="{'profile-left': from === 'Me', 'profile-right': from !== 'Me' }" class="image is-128x128">
-			<img class="is-rounded" :src="profileImageURI">
-		</figure>
-		<article class="message" :class="{'is-info': isIncoming }">
-		  <div class="message-header">
-		    {{ from }}
-								<small class="timestamp">  {{ ts }} </small>
-		  </div>
-		  <div class="message-body message">
-		    <slot></slot>
-		  </div>
-		</article>
+	<div>
+		<div class="columns is-multiline">
+			<div class="column message">
+				<figure class="image is-64x64" :class="{'profile-left': from === 'Me', 'profile-right': from !== 'Me' }" >
+					<img class="is-rounded" :src="profileImageURI">
+				</figure>
+				<article class="message" :class="{'is-info': isIncoming }">
+					<div class="message-header">
+				    {{ from }}
+						<small class="timestamp">  {{ ts }} </small>
+				  </div>
+				  <div class="message-body message">
+				    <slot></slot>
+				  </div>
+				</article>
+			</div>
+
+		</div>
+
 	</div>
 </template>
 
@@ -44,15 +50,35 @@ export default {
 </script>
 
 <style lang="scss">
-.message-element {
-  padding: 10px;
-  margin-bottom: 50px;
-  background-color: rgba(0, 0, 0, 0);
+$grey-darker:  hsl(0, 0%, 21%) !default
+$grey-dark:    hsl(0, 0%, 29%) !default
+$accent: #00a1ff;
+
+.message {
+  padding: 0px;
+  margin-bottom: 10px;
   text-align: left;
 }
 .profile-left {
   float: left;
-  margin-right: 10px;
+}
+article {
+  .message-body {
+    background: none;
+  }
+}
+.columns {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.message-header {
+  font-size: 0.85em;
+}
+.image {
+  position: fixed;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  margin-right: 5px;
 }
 .profile-right {
   margin-left: 10px;

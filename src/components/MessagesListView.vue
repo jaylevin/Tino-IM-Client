@@ -1,33 +1,21 @@
 <template>
-  <div class="messages">
-    <ul tabindex="1" class="messages-ul">
-        <h1 class="title">Messages</h1>
-        <message v-for="message in messages" :ts="message.timestamp" :from="message.from">
-            {{ message.content }}
+  <div class="messages columns is-multiline">
+    <div class="column is-full">
 
-        </message>
-    </ul>
-
-    <!-- Pagination controls -->
-    <nav class="pagination is-rounded is-hidden-mobile" role="navigation" aria-label="pagination">
-      <a class="pagination-previous">Previous</a>
-      <a class="pagination-next">Next page</a>
-      <ul class="pagination-list">
-        <li><a class="pagination-link" aria-label="Goto page 1">1</a></li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a class="pagination-link" aria-label="Goto page 45">45</a></li>
-        <li><a class="pagination-link" aria-label="Page 46" aria-current="page">46</a></li>
-        <li><a class="pagination-link" aria-label="Goto page 47">47</a></li>
-        <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <li><a class="pagination-link" aria-label="Goto page 86">86</a></li>
+      <ul tabindex="1" class="messages-ul unselectable">
+          <message v-for="message in messages" :ts="message.timestamp" :from="message.from">
+              {{ message.content }}
+          </message>
       </ul>
-    </nav>
+    </div>
+
+    <!-- <div style="margin-top:0.5em;" class="is-divider"></div> -->
 
     <!-- Send message controls -->
-    <div style="margin-top:0.5em;" class="is-divider"></div>
+    <div class="column is-full sendMessageCol">
     <div class="sendMessageDiv">
       <div class="field has-addons">
-        <textarea class="textarea" placeholder="Type something..."></textarea>
+        <textarea rows="1" class="textarea" placeholder="Type something..."></textarea>
       </div>
       <div class="control">
         <a @click="sendMessage(messageInput)" class="button is-info">
@@ -35,6 +23,8 @@
         </a>
       </div>
     </div>
+  </div>
+
   </div>
 </template>
 
@@ -101,23 +91,32 @@ export default {
 
 
 <style scoped lang="scss">
+.column {
+  padding-bottom: 0px;
+}
+.sendMessageCol {
+  padding-top: 0px;
+}
 .sendMessageDiv {
   margin-top: 15px;
-  position: fixed;
-  bottom: 5px;
-  width: 80%;
+  textarea {
+    height: auto;
+  }
 }
+
 .messages-ul {
-  height: 70vh;
+  height: 60vh;
+  &:focus {
+    outline: 0 !important;
+  }
   overflow-y: scroll;
 }
 
 .messages {
-  border: 1px solid grey;
   padding: 5px;
+  margin-right: 15px;
   .title {
     text-align: left;
   }
-  margin-right: 15px;
 }
 </style>

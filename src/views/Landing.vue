@@ -13,5 +13,6 @@ export default {
 
 <style lang="scss" scoped>
 .landing {
+  margin-top: 25vh;
 }
 </style>
