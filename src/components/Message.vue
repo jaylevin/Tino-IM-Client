@@ -83,6 +83,7 @@ article {
 .profile-right {
   margin-left: 10px;
   float: right;
+	margin-right:10px;
 }
 .timestamp {
   float: right;

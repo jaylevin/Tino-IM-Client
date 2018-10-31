@@ -94,9 +94,11 @@ export default {
 .column {
   padding-bottom: 0px;
 }
+
 .sendMessageCol {
   padding-top: 0px;
 }
+
 .sendMessageDiv {
   margin-top: 15px;
   textarea {
@@ -106,10 +108,11 @@ export default {
 
 .messages-ul {
   height: 60vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
   &:focus {
     outline: 0 !important;
   }
-  overflow-y: scroll;
 }
 
 .messages {

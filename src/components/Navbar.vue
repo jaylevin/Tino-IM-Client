@@ -35,7 +35,7 @@
         <div class="navbar-item">
           <div class="buttons">
             <a class="button">
-              Signup
+              <router-link :to="{ name: 'signup' }">Signup</router-link>
             </a>
             <a @click="logout" v-if="isAuthenticated" class="button">Logout</a>
             <a @click="testLogin" v-else class="button">Login</a>
