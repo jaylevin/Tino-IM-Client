@@ -1,5 +1,5 @@
 <template>
-  <div class="chat">
+  <div class="discover">
     Discover View
   </div>
 </template>
@@ -15,4 +15,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 $accent: #00a1ff;
+.discover {
+  margin-top: 25vh;
+}
 </style>

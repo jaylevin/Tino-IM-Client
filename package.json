@@ -9,11 +9,13 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bulma": "^0.7.2",
     "bulma-divider": "^2.0.1",
     "bulma-extensions": "^3.0.0",
     "tinode-sdk": "^0.15.7",
     "vue": "^2.5.17",
+    "vue-axios": "^2.1.4",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
