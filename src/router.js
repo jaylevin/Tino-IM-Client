@@ -6,9 +6,9 @@ import DiscoverView from "./views/Discover.vue";
 import FaqView from "./views/Faq.vue";
 import DashboardView from "./views/Dashboard.vue";
 import SignupView from "./views/Signup.vue";
+import LoginView from "./views/Login.vue";
 
 Vue.use(Router);
-
 export default new Router({
   routes: [
     {
@@ -40,6 +40,11 @@ export default new Router({
       path: "/signup",
       name: "signup",
       component: SignupView
+    },
+    {
+      path: "/login",
+      name: "login",
+      component: LoginView
     }
   ]
 });

@@ -32,14 +32,7 @@ export default {
       profileImageURI: defaultAvatar
     };
   },
-  mounted() {
-    if (this.from != "Me") {
-      console.log(
-        "message:",
-        store.state.tinode.client.getTopic(this.from).public
-      );
-    }
-  },
+  mounted() {},
   computed: {
     // Styles incoming messages differently. See the above :class binding.
     isIncoming() {

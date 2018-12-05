@@ -1,12 +1,17 @@
 <template>
   <aside class="menu contacts">
+
+
+    <a @click="addContact" class="button">
+      Add Contact
+    </a>
     <p class="menu-label">
       Contacts
     </p>
     <ul class="menu-list">
       <li v-for="contact in contacts" @click="selectedContact = contact">
         <a :class="{'is-active': selectedContact == contact}">
-        {{contact}}
+        {{ contact.name }}
         </a>
       </li>
     </ul>
@@ -14,21 +19,31 @@
 </template>
 
 <script>
+import store from "@/store.js";
+
 export default {
   name: "ContactsMenu",
   data() {
     return {
-      selectedContact: "",
-      contacts: [
-        "John Smith",
-        "Amy Wilson",
-        "Bob Smith",
-        "Billy Joe",
-        "Jimmy Johnson",
-        "Robert Lang",
-        "Sydney West"
-      ]
+      selectedContact: ""
     };
+  },
+  computed: {
+    contacts() {
+      return store.getters.getContacts;
+    }
+  },
+  methods: {
+    addContact: function() {
+      var person = prompt(
+        "Enter the name of the userID of the friend you would like to request",
+        ""
+      );
+
+      if (person != null) {
+        this.$tinodeClient.subscribe(person);
+      }
+    }
   }
 };
 </script>
@@ -51,8 +66,7 @@ $accent: #00a1ff;
       a {
         color: white;
         &:hover {
-          color: black;
-          background: $accent;
+          background: rgba(0,0,0,0.5)
         }
       }
     }

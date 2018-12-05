@@ -145,6 +145,7 @@ export default {
     },
     handleSubmit() {
       console.log(
+        "Form submitted:",
         this.form.fullName,
         this.form.username,
         this.form.password,
@@ -165,18 +166,6 @@ export default {
         })
         .catch(e => {
           this.form.errors.push(e);
-        });
-
-      axios
-        .post("http://localhost:8000/users", {
-          fullName: this.form.fullName,
-          username: this.form.username,
-          password: this.form.password,
-          email: this.form.email,
-          avatarData: this.form.avatarData
-        })
-        .then(response => {
-          console.log(response.data);
         });
     }
   }

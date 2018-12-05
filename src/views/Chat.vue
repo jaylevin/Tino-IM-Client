@@ -19,7 +19,12 @@ import MessagesListView from "@/components/MessagesListView.vue";
 export default {
   name: "Chat",
   props: {},
-  components: { ContactsMenu, MessagesListView }
+  components: { ContactsMenu, MessagesListView },
+  mounted() {
+    if (!this.$tinodeClient._authenticated) {
+      this.$router.push({ name: "landing" });
+    }
+  }
 };
 </script>
 
