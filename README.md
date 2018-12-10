@@ -1,31 +1,7 @@
 # Tino-IM
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
+## Features:
+* Registration page with avatar selection
+* Login and basic authentication
+* Add a topic via topic ID
+* Basic message history and message sending/receiving
