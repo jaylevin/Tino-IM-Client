@@ -52,6 +52,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import store from "@/store.js";
 
 export default {
   name: "Navbar",
@@ -70,7 +71,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$tinodeClient.disconnect();
+      store.dispatch("logout");
     }
   }
 };

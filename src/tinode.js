@@ -15,9 +15,9 @@ export function NewClient() {
     router.push({ name: "landing" });
   };
 
-  client.connect().then(() => {
-    console.log("Client connected");
-  });
+  // client.connect().then(() => {
+  //   console.log("Client connected");
+  // });
 
   return client;
 }

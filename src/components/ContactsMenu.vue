@@ -1,7 +1,5 @@
 <template>
   <aside class="menu contacts">
-
-
     <a @click="addContact" class="button">
       Add Contact
     </a>
@@ -9,9 +7,9 @@
       Contacts
     </p>
     <ul class="menu-list">
-      <li v-for="contact in contacts" @click="selectedContact = contact">
-        <a :class="{'is-active': selectedContact == contact}">
-        {{ contact.name }}
+      <li v-for="topic in contacts" @click="selectTopic(topic)">
+        <a :class="{'is-active': selectedTopic == topic}">
+        {{ topic.public.FN }}
         </a>
       </li>
     </ul>
@@ -24,11 +22,12 @@ import store from "@/store.js";
 export default {
   name: "ContactsMenu",
   data() {
-    return {
-      selectedContact: ""
-    };
+    return {};
   },
   computed: {
+    selectedTopic() {
+      return store.getters.getSelectedTopic;
+    },
     contacts() {
       return store.getters.getContacts;
     }
@@ -42,6 +41,12 @@ export default {
 
       if (person != null) {
         this.$tinodeClient.subscribe(person);
+      }
+    },
+    selectTopic: function(contact) {
+      if (contact.name != store.getters.getSelectedTopic.name) {
+        store.dispatch("selectTopic", contact);
+        console.log("Selected contact:", store.getters.getSelectedTopic);
       }
     }
   }

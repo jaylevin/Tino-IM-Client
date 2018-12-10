@@ -15,9 +15,7 @@
 				  </div>
 				</article>
 			</div>
-
 		</div>
-
 	</div>
 </template>
 
@@ -49,7 +47,7 @@ $accent: #00a1ff;
 
 .message {
   padding: 0px;
-  margin-bottom: 10px;
+  margin-bottom: -8px;
   text-align: left;
 }
 .profile-left {

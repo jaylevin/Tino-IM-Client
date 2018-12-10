@@ -161,8 +161,11 @@ export default {
           avatarData: this.form.avatarData
         })
         .then(response => {
-          // JSON responses are automatically parsed.
           console.log("response:", response);
+          if (response.status == 200) {
+            // account was created successfully
+            this.$router.push({ name: "login" });
+          }
         })
         .catch(e => {
           this.form.errors.push(e);

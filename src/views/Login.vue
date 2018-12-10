@@ -106,33 +106,42 @@ export default {
           );
         })
         .then(ctrl => {
-          console.log("Received ctrl message:", ctrl);
           var me = this.$tinodeClient.getMeTopic();
+          var comp = this;
+          this.$tinodeClient.onDataMessage = function(data) {
+            if (store.getters.getSelectedTopic.name == data.topic) {
+              var outgoing = comp.$tinodeClient.getCurrentUserID() == data.from;
+              console.log(data);
+              store.dispatch("handleNewMessage", {
+                from: outgoing ? "Me" : data.public.FN,
+                content: data.content,
+                ts: JSON.stringify(data.ts)
+                  .split("T")[0]
+                  .replace(`"`, ``)
+              });
+            }
+          };
 
           me.onMeta = function(meta) {
             meta.sub.forEach(function(sub) {
               var topic = comp.$tinodeClient.getTopic(sub.topic);
-              console.log(topic);
-              store.dispatch("addContact", {
-                name: topic.public.FN,
-                uid: topic.name
-              });
+              store.dispatch("handleNewContact", topic);
+
               var subRequest = topic
                 .subscribe()
                 .then(ctrl => {
-                  topic.getMeta({ what: "data" });
+                  console.log("subscribed to topic:", topic);
                 })
                 .catch(err => {
                   console.log("err encountered:", err);
                 });
             });
             console.log("Loaded contacts list.");
-            comp.$router.push({ name: "chat" });
           };
           me.subscribe({ what: "sub" });
+          comp.$router.push({ name: "chat" });
         })
         .catch(err => {
-          comp.$router.push({ name: "chat" });
           comp.form.setError(err.message);
         });
     }

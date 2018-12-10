@@ -1,6 +1,8 @@
 <template>
   <div class="landing">
-    Landing page
+    <div class="img">
+      <img src="https://raw.githubusercontent.com/ahsanazim/slack-landing-page/master/screen_caps/main_background.jpg">
+    </div>
   </div>
 </template>
 
@@ -12,7 +14,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.landing {
-  margin-top: 25vh;
+.img {
+  img {
+    height: 100%;
+  }
 }
 </style>
