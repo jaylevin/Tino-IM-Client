@@ -36,10 +36,10 @@
       </p>
       <div class="field is-grouped">
         <div class="control">
-          <button class="button is-link">Submit</button>
+          <button class="button is-link">Login</button>
         </div>
         <div class="control">
-          <button class="button is-text">Cancel</button>
+          <button class="button is-link is-success">Signup</button>
         </div>
       </div>
     </form>
@@ -108,12 +108,16 @@ export default {
         .then(ctrl => {
           var me = this.$tinodeClient.getMeTopic();
           var comp = this;
+
           this.$tinodeClient.onDataMessage = function(data) {
             if (store.getters.getSelectedTopic.name == data.topic) {
+              var topic = comp.$tinodeClient.getTopic(data.topic);
               var outgoing = comp.$tinodeClient.getCurrentUserID() == data.from;
               console.log(data);
               store.dispatch("handleNewMessage", {
-                from: outgoing ? "Me" : data.public.FN,
+                from: outgoing
+                  ? "Me"
+                  : comp.$tinodeClient.getTopic(data.topic).public.FN,
                 content: data.content,
                 ts: JSON.stringify(data.ts)
                   .split("T")[0]
@@ -150,8 +154,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+$accent: #00a1ff;
+$grey-darker: hsl(0, 0%, 21%) !default;
+$grey-dark: hsl(0, 0%, 29%) !default;
+label {
+  color: white;
+}
 .signup {
   text-align: left;
   margin: 5em;
+  background-color: rgba(54, 54, 54, 0.3);
 }
 </style>

@@ -78,7 +78,7 @@ $accent: #00a1ff;
   }
 }
 .contacts {
-  background: $grey-darker;
+  background: rgba(54,54,54,0.5);
   padding: 15px;
   height: 80vh;
   text-align: left;

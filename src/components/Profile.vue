@@ -22,19 +22,19 @@
       <div class="field">
         <label class="label">Name</label>
         <div class="control">
-          <input v-model="name" class="input" type="text" placeholder="Your name">
+          <input v-model="name" class="input" type="text">
         </div>
       </div>
       <div class="field">
         <label class="label">Username</label>
         <div class="control">
-          <input v-model="username" class="input" type="text" placeholder="Your username">
+          <input v-model="username" class="input" type="text">
         </div>
       </div>
       <div class="field">
         <label class="label">Email address</label>
         <div class="control">
-          <input v-model="email" class="input" type="email" placeholder="Your email address">
+          <input v-model="email" class="input" type="email">
         </div>
       </div>
     </div>
@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       name: "",
-      username: "",
+      username: this.$tinodeClient.getCurrentLogin(),
       email: "",
       avatarData: ""
     };

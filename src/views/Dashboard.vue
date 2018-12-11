@@ -40,7 +40,10 @@ export default {
   props: {},
   data() {
     return {
-      tab: "profile"
+      tab: "profile",
+      fullName: "",
+      username: "",
+      email: ""
     };
   }
 };

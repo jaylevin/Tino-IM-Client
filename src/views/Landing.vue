@@ -1,22 +1,36 @@
 <template>
   <div class="landing">
-    <div class="img">
-      <img src="https://raw.githubusercontent.com/ahsanazim/slack-landing-page/master/screen_caps/main_background.jpg">
+    <h1>Landing Page</h1>
+    <div class="content">
+      You start here.
     </div>
   </div>
 </template>
 
 <script>
+import store from "@/store.js";
 export default {
   name: "Landing",
-  components: {}
+  props: {}
 };
 </script>
 
-<style lang="scss" scoped>
-.img {
-  img {
-    height: 100%;
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped lang="scss">
+$accent: #00a1ff;
+
+.landing {
+  color: $accent;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 5%;
+  margin-top: 15%;
+  margin-left: 15%;
+  margin-right: 15%;
+  h1 {
+    font-size: 1.5em;
+  }
+  .content {
+    color: white;
   }
 }
 </style>
