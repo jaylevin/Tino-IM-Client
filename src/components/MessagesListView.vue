@@ -67,6 +67,14 @@ export default {
 
 
 <style scoped lang="scss">
+$accent: #00a1ff;
+
+textarea {
+  background: transparent;
+  resize: none;
+  border: 1px solid $accent;
+  color: white;
+}
 .column {
   padding-bottom: 0px;
 }

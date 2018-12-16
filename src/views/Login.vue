@@ -162,7 +162,7 @@ label {
 }
 .signup {
   text-align: left;
-  margin: 5em;
+  margin: 1em;
   background-color: rgba(54, 54, 54, 0.3);
 }
 </style>

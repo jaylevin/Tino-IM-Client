@@ -43,13 +43,14 @@ $accent: #00a1ff;
 
 
 .msg {
+	radius:50px;
   padding: 0px;
   margin-bottom: 15px;
   text-align: left;
 	radius: 5px;
 
 	.content {
-		color: red;
+		color: white;
 		margin-left:65px;
 		padding-top:8px;
 		padding-bottom:8px;
@@ -68,7 +69,7 @@ $accent: #00a1ff;
 		margin-left:65px;
 		background-color: rgba(0,0,0,0.5);
 		padding: 8px;
-		color: white;
+		color: red;
 		.timestamp {
 			float: right;
 		}
@@ -78,6 +79,9 @@ $accent: #00a1ff;
 .incoming {
 	.content {
 		color: $accent;
+	}
+	.message-head {
+		color: white;
 	}
 }
 
