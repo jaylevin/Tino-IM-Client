@@ -1,7 +1,6 @@
 <template>
   <div class="messages columns is-multiline">
     <div class="column is-full">
-
       <ul id="messages" tabindex="1" class="messages-ul unselectable">
           <message v-for="message in messages" :ts="message.ts" :from="message.from">
               {{ message.content }}
@@ -36,6 +35,11 @@ export default {
   components: {
     Message
   },
+  data() {
+    return {
+      messageInput: ""
+    };
+  },
   mounted() {
     var msgs = this.$el.querySelector("#messages");
     msgs.scrollTop = msgs.scrollHeight;
@@ -45,11 +49,6 @@ export default {
     if (msgs.scrollTop != msgs.scrollHeight) {
       msgs.scrollTop = msgs.scrollHeight;
     }
-  },
-  data() {
-    return {
-      messageInput: ""
-    };
   },
   computed: {
     messages() {

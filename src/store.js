@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import router from "./router";
 import * as tinode from "@/tinode.js";
+
 const tClient = tinode.NewClient();
 
 Vue.prototype.$tinodeClient = tClient;

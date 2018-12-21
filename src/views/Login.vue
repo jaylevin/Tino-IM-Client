@@ -1,5 +1,6 @@
 <template>
   <div class="box signup">
+
     <form @submit.prevent="handleLogin">
       <div class="field">
         <label class="label">Username</label>
@@ -68,11 +69,13 @@ class Form {
 export default {
   name: "Login",
   props: ["tinodeClient"],
+
   data() {
     return {
       form: new Form()
     };
   },
+
   methods: {
     onAvatarChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -157,12 +160,16 @@ export default {
 $accent: #00a1ff;
 $grey-darker: hsl(0, 0%, 21%) !default;
 $grey-dark: hsl(0, 0%, 29%) !default;
+
 label {
   color: white;
 }
+
 .signup {
   text-align: left;
-  margin: 1em;
+  margin-top: 5em;
+  display: inline-block;
+  width: 500px;
   background-color: rgba(54, 54, 54, 0.3);
 }
 </style>
