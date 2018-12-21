@@ -1,10 +1,10 @@
 <template>
-  <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+  <nav @mouseleave="navBurgerActivated = false" class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="logo">
         <router-link class="navbar-item" :to="{ name: 'landing' }" @click="tab='home'">Tino IM</router-link>
       </a>
-      <a role="button" @click="navBurgerActivated = !navBurgerActivated" :class="{'is-active': navBurgerActivated}" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <a role="button" @mouseover="navBurgerActivated = !navBurgerActivated"  :class="{'is-active': navBurgerActivated}" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>

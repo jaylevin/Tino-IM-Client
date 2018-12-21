@@ -56,4 +56,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+label {
+  color: white;
+}
 </style>
