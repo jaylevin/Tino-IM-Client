@@ -1,24 +1,18 @@
 <template>
-	<div>
 		<div class="columns is-multiline">
-			<div class="column message">
+			<div class="column msg" :class="{'incoming': from === 'Me'}">
 				<figure class="image is-64x64" :class="{'profile-left': from === 'Me', 'profile-right': from !== 'Me' }" >
 					<img class="is-rounded" :src="profileImageURI">
 				</figure>
-				<article class="message" :class="{'is-info': isIncoming }">
-					<div class="message-header">
+					<div class="message-head">
 				    {{ from }}
 						<small class="timestamp">  {{ ts }} </small>
 				  </div>
-				  <div class="message-body message">
+				  <div class="content">
 				    <slot></slot>
 				  </div>
-				</article>
 			</div>
-
 		</div>
-
-	</div>
 </template>
 
 
@@ -47,38 +41,59 @@ $grey-darker:  hsl(0, 0%, 21%) !default
 $grey-dark:    hsl(0, 0%, 29%) !default
 $accent: #00a1ff;
 
-.message {
+
+.msg {
+	radius:50px;
   padding: 0px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   text-align: left;
+	radius: 5px;
+
+	.content {
+		color: white;
+		margin-left:65px;
+		padding-top:8px;
+		padding-bottom:8px;
+		padding-left:8px;
+		background-color: rgba(0,0,0,0.3)
+	}
+	.profile-left {
+	  float: left;
+	}
+	.profile-right {
+	  margin-left: 10px;
+	  float: right;
+		margin-right:10px;
+	}
+	.message-head {
+		margin-left:65px;
+		background-color: rgba(0,0,0,0.5);
+		padding: 8px;
+		color: red;
+		.timestamp {
+			float: right;
+		}
+	}
 }
-.profile-left {
-  float: left;
+
+.incoming {
+	.content {
+		color: $accent;
+	}
+	.message-head {
+		color: white;
+	}
 }
-article {
-  .message-body {
-    background: none;
-  }
-}
-.columns {
-  margin-left: 5px;
-  margin-right: 5px;
-}
-.message-header {
-  font-size: 0.85em;
-}
+
 .image {
   position: fixed;
   margin-top: 5px;
   margin-bottom: 15px;
   margin-right: 5px;
 }
-.profile-right {
-  margin-left: 10px;
-  float: right;
-	margin-right:10px;
+.columns {
+  margin-left: 5px;
+  margin-right: 5px;
 }
-.timestamp {
-  float: right;
-}
+
 </style>

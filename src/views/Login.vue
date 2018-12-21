@@ -1,5 +1,6 @@
 <template>
   <div class="box signup">
+
     <form @submit.prevent="handleLogin">
       <div class="field">
         <label class="label">Username</label>
@@ -36,10 +37,10 @@
       </p>
       <div class="field is-grouped">
         <div class="control">
-          <button class="button is-link">Submit</button>
+          <button class="button is-link">Login</button>
         </div>
         <div class="control">
-          <button class="button is-text">Cancel</button>
+          <button class="button is-link is-success">Signup</button>
         </div>
       </div>
     </form>
@@ -68,11 +69,13 @@ class Form {
 export default {
   name: "Login",
   props: ["tinodeClient"],
+
   data() {
     return {
       form: new Form()
     };
   },
+
   methods: {
     onAvatarChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -106,33 +109,46 @@ export default {
           );
         })
         .then(ctrl => {
-          console.log("Received ctrl message:", ctrl);
           var me = this.$tinodeClient.getMeTopic();
+          var comp = this;
+
+          this.$tinodeClient.onDataMessage = function(data) {
+            if (store.getters.getSelectedTopic.name == data.topic) {
+              var topic = comp.$tinodeClient.getTopic(data.topic);
+              var outgoing = comp.$tinodeClient.getCurrentUserID() == data.from;
+              console.log(data);
+              store.dispatch("handleNewMessage", {
+                from: outgoing
+                  ? "Me"
+                  : comp.$tinodeClient.getTopic(data.topic).public.FN,
+                content: data.content,
+                ts: JSON.stringify(data.ts)
+                  .split("T")[0]
+                  .replace(`"`, ``)
+              });
+            }
+          };
 
           me.onMeta = function(meta) {
             meta.sub.forEach(function(sub) {
               var topic = comp.$tinodeClient.getTopic(sub.topic);
-              console.log(topic);
-              store.dispatch("addContact", {
-                name: topic.public.FN,
-                uid: topic.name
-              });
+              store.dispatch("handleNewContact", topic);
+
               var subRequest = topic
                 .subscribe()
                 .then(ctrl => {
-                  topic.getMeta({ what: "data" });
+                  console.log("subscribed to topic:", topic);
                 })
                 .catch(err => {
                   console.log("err encountered:", err);
                 });
             });
             console.log("Loaded contacts list.");
-            comp.$router.push({ name: "chat" });
           };
           me.subscribe({ what: "sub" });
+          comp.$router.push({ name: "chat" });
         })
         .catch(err => {
-          comp.$router.push({ name: "chat" });
           comp.form.setError(err.message);
         });
     }
@@ -141,8 +157,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
+$accent: #00a1ff;
+$grey-darker: hsl(0, 0%, 21%) !default;
+$grey-dark: hsl(0, 0%, 29%) !default;
+
+label {
+  color: white;
+}
+
 .signup {
   text-align: left;
-  margin: 5em;
+  margin-top: 5em;
+  display: inline-block;
+  width: 500px;
+  background-color: rgba(54, 54, 54, 0.3);
 }
 </style>

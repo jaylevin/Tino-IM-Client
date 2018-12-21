@@ -1,7 +1,7 @@
 <template>
   <div class="chat">
     <div class="columns is-full-height">
-      <div class="column is-hidden-mobile is-2 is-sidebar-menu">
+      <div class="column is-2 is-sidebar-menu">
         <contacts-menu></contacts-menu>
       </div>
       <div class="column">

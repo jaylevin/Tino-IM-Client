@@ -14,6 +14,16 @@ export default {
 </script>
 
 <style lang="scss">
+body,
+html {
+  height: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-image: url("https://raw.githubusercontent.com/ahsanazim/slack-landing-page/master/screen_caps/main_background.jpg");
+  background-color: #cccccc;
+  background-size: cover;
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
