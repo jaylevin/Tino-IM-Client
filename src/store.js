@@ -10,12 +10,18 @@ Vue.use(Vuex);
 const appStore = {
   state: {
     tinodeClient: tClient,
+    profile: {},
     selectedTopic: {},
     contacts: [],
-    messages: []
+    messages: [
+      { content: "You have no messages, start a new conversation today!" }
+    ]
   },
 
   mutations: {
+    setProfile: (state, profile) => {
+      state.profile = profile;
+    },
     handleNewContact: (state, contact) => {
       state.contacts.push(contact);
     },
@@ -25,9 +31,15 @@ const appStore = {
     handleSendMessage: (state, messageInput) => {
       var currentTopicID = state.selectedTopic.name;
       var topic = state.tinodeClient.getTopic(currentTopicID);
-      var msg = topic.createMessage(messageInput, false);
-      topic.publishMessage(msg).catch(err => {
-        console.log("Error sending message:", err.message);
+      var msg = topic.createMessage(messageInput, true);
+      topic.publishMessage(msg).then(() => {
+        // update UI after sending message to server
+        state.messages.push({
+          from: state.profile.displayName,
+          content: messageInput,
+          ts: Date.now().toString(),
+          seq: topic._maxSeq
+        });
       });
     },
     renderMessages: state => {
@@ -35,23 +47,9 @@ const appStore = {
       var currentTopicID = state.selectedTopic.name;
       var topic = state.tinodeClient.getTopic(currentTopicID);
       if (topic) {
-        topic
-          .getMessagesPage(20)
-          .then(() => {
-            topic.messages(m => {
-              var outgoing = state.tinodeClient.getCurrentUserID() == m.from;
-              state.messages.push({
-                from: outgoing ? "Me" : topic.public.FN,
-                content: m.content,
-                ts: JSON.stringify(m.ts)
-                  .split("T")[0]
-                  .replace(`"`, ``)
-              });
-            });
-          })
-          .catch(err => {
-            console.log("Error fetching messages:", err.message);
-          });
+        topic.getMessagesPage(20).catch(err => {
+          console.log("Error fetching messages:", err.message);
+        });
       }
     },
     selectTopic: (state, topic) => {
@@ -59,11 +57,14 @@ const appStore = {
     },
     logout: state => {
       state.tinodeClient.disconnect();
-      router.go();
+      router.go(); // refresh the page
     }
   }, // END of mutations
 
   actions: {
+    setProfile: (context, profile) => {
+      context.commit("setProfile", profile);
+    },
     handleNewContact: (context, contact) => {
       context.commit("handleNewContact", contact);
     },
@@ -86,6 +87,9 @@ const appStore = {
   }, // END of actions
 
   getters: {
+    getProfile: state => {
+      return state.profile;
+    },
     isAuthenticated: state => {
       return state.tinodeClient._authenticated;
     },

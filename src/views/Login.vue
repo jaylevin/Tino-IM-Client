@@ -113,39 +113,46 @@ export default {
           var comp = this;
 
           this.$tinodeClient.onDataMessage = function(data) {
+            console.log("data:", data);
             if (store.getters.getSelectedTopic.name == data.topic) {
               var topic = comp.$tinodeClient.getTopic(data.topic);
               var outgoing = comp.$tinodeClient.getCurrentUserID() == data.from;
-              console.log(data);
-              store.dispatch("handleNewMessage", {
-                from: outgoing
-                  ? "Me"
-                  : comp.$tinodeClient.getTopic(data.topic).public.FN,
+              var from = outgoing
+                ? store.getters.getProfile.displayName
+                : topic.public.FN;
+              var message = {
+                from: from,
                 content: data.content,
-                ts: JSON.stringify(data.ts)
-                  .split("T")[0]
-                  .replace(`"`, ``)
-              });
+                ts: data.ts,
+                seq: data.seq
+              };
+              store.dispatch("handleNewMessage", message);
+            } else {
+              // update unread count
             }
           };
 
           me.onMeta = function(meta) {
-            meta.sub.forEach(function(sub) {
-              var topic = comp.$tinodeClient.getTopic(sub.topic);
-              store.dispatch("handleNewContact", topic);
-
-              var subRequest = topic
-                .subscribe()
-                .then(ctrl => {
-                  console.log("subscribed to topic:", topic);
-                })
-                .catch(err => {
-                  console.log("err encountered:", err);
-                });
-            });
-            console.log("Loaded contacts list.");
+            if (meta.sub) {
+              // Load contacts list
+              meta.sub.forEach(function(sub) {
+                var topic = comp.$tinodeClient.getTopic(sub.topic);
+                store.dispatch("handleNewContact", topic);
+                var subRequest = topic.subscribe();
+              });
+              console.log("Successfully loaded contacts list.");
+            } else if (meta.desc) {
+              console.log("meta desc:", meta.desc);
+              // Load profile information
+              store.dispatch("setProfile", {
+                tinodeID: comp.$tinodeClient.getCurrentUserID(),
+                username: comp.$tinodeClient.getCurrentLogin(),
+                displayName: meta.desc.public.FN,
+                avatar: meta.desc.public.Photo
+              });
+            }
           };
-          me.subscribe({ what: "sub" });
+          me.subscribe({ what: "sub desc" });
           comp.$router.push({ name: "chat" });
         })
         .catch(err => {
@@ -157,10 +164,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$accent: #00a1ff;
-$grey-darker: hsl(0, 0%, 21%) !default;
-$grey-dark: hsl(0, 0%, 29%) !default;
-
 label {
   color: white;
 }

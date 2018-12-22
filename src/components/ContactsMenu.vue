@@ -54,14 +54,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$grey-darker:  hsl(0, 0%, 21%) !default
-$grey-dark:    hsl(0, 0%, 29%) !default
-$accent: #00a1ff;
-
 .menu {
   p {
     color: $accent;
-    font-size:1em;
+    font-size: 1em;
   }
   ul {
     li {
@@ -71,14 +67,14 @@ $accent: #00a1ff;
       a {
         color: white;
         &:hover {
-          background: rgba(0,0,0,0.5)
+          background: rgba(0, 0, 0, 0.5);
         }
       }
     }
   }
 }
 .contacts {
-  background: rgba(54,54,54,0.5);
+  background: rgba(54, 54, 54, 0.5);
   padding: 15px;
   text-align: left;
 }

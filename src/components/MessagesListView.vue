@@ -2,8 +2,11 @@
   <div class="messages columns is-multiline">
     <div class="column is-full">
       <ul id="messages" tabindex="1" class="messages-ul unselectable">
-          <message v-for="message in messages" :ts="message.ts" :from="message.from">
-              {{ message.content }}
+          <message v-for="message in messages"
+                   :ts="message.ts"
+                   :from="message.from"
+                   :content="message.content"
+                   :seq="message.seq">
           </message>
       </ul>
     </div>
@@ -66,8 +69,6 @@ export default {
 
 
 <style scoped lang="scss">
-$accent: #00a1ff;
-
 textarea {
   background: transparent;
   resize: none;

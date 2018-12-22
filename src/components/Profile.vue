@@ -20,21 +20,21 @@
     </div>
     <div class="column">
       <div class="field">
-        <label class="label">Name</label>
+        <label class="label">Display Name</label>
         <div class="control">
-          <input v-model="name" class="input" type="text">
+          <input v-model="profile.displayName" class="input" type="text">
         </div>
       </div>
       <div class="field">
         <label class="label">Username</label>
         <div class="control">
-          <input v-model="username" class="input" type="text">
+          <input v-model="profile.username" class="input" type="text">
         </div>
       </div>
       <div class="field">
         <label class="label">Email address</label>
         <div class="control">
-          <input v-model="email" class="input" type="email">
+          <input v-model="profile" class="input" type="email">
         </div>
       </div>
     </div>
@@ -42,15 +42,13 @@
 </template>
 
 <script>
+import store from "@/store.js";
 export default {
   name: "Profile",
-  data() {
-    return {
-      name: "",
-      username: this.$tinodeClient.getCurrentLogin(),
-      email: "",
-      avatarData: ""
-    };
+  computed: {
+    profile() {
+      return store.getters.getProfile;
+    }
   }
 };
 </script>
