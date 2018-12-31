@@ -1,7 +1,7 @@
 <template>
   <div class="messages columns is-multiline">
     <div class="column is-full">
-      <ul id="messages" tabindex="1" class="messages-ul unselectable">
+      <ul id="messages" tabindex="1" class="messages-ul">
           <message v-for="message in messages"
                    :ts="message.ts"
                    :from="message.from"
@@ -75,6 +75,7 @@ textarea {
   border: 1px solid $accent;
   color: white;
 }
+
 .column {
   padding-bottom: 0px;
 }
@@ -85,6 +86,10 @@ textarea {
 
 .sendMessageDiv {
   margin-top: 15px;
+  textarea::placeholder {
+    color: white;
+    font-size: 1.25em;
+  }
   textarea {
     height: auto;
   }

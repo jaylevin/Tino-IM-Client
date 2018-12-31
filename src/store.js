@@ -14,13 +14,27 @@ const appStore = {
     selectedTopic: {},
     contacts: [],
     messages: [
-      { content: "You have no messages, start a new conversation today!" }
+      {
+        content:
+          "Start a new conversation or group chat using the buttons on the left."
+      }
     ]
   },
 
   mutations: {
     setProfile: (state, profile) => {
       state.profile = profile;
+    },
+    handleUpdateProfile: (state, pub) => {
+      state.tinodeClient
+        .getMeTopic()
+        .setMeta({ desc: { public: pub } })
+        .catch(err => {
+          console.log("err updating account:", err);
+        });
+      if (pub["FN"] != state.profile.displayName) {
+        state.profile.displayName = pub["FN"];
+      }
     },
     handleNewContact: (state, contact) => {
       state.contacts.push(contact);
@@ -64,6 +78,9 @@ const appStore = {
   actions: {
     setProfile: (context, profile) => {
       context.commit("setProfile", profile);
+    },
+    handleUpdateProfile: (context, data) => {
+      context.commit("handleUpdateProfile", data);
     },
     handleNewContact: (context, contact) => {
       context.commit("handleNewContact", contact);

@@ -22,20 +22,23 @@
       <div class="field">
         <label class="label">Display Name</label>
         <div class="control">
-          <input v-model="profile.displayName" class="input" type="text">
+          <input v-model="displayName" class="input" type="text">
         </div>
       </div>
       <div class="field">
         <label class="label">Username</label>
         <div class="control">
-          <input v-model="profile.username" class="input" type="text">
+          <input v-model="username" class="input" type="text" readonly>
         </div>
       </div>
       <div class="field">
         <label class="label">Email address</label>
         <div class="control">
-          <input v-model="profile" class="input" type="email">
+          <input v-model="email" class="input" type="email">
         </div>
+      </div>
+      <div class="control">
+        <button class="button is-link" @click="handleUpdateAccount">Save</button>
       </div>
     </div>
   </div>
@@ -45,6 +48,44 @@
 import store from "@/store.js";
 export default {
   name: "Profile",
+  data() {
+    return {
+      username: store.getters.getProfile.username,
+      displayName: store.getters.getProfile.displayName,
+      avatarData: store.getters.getProfile.avatar.Data,
+      email: ""
+    };
+  },
+  methods: {
+    handleUpdateAccount() {
+      var currProfile = store.getters.getProfile;
+      var newDisplayName = currProfile.displayName;
+      var newAvatar = currProfile.avatar;
+      var updated = false;
+
+      if (currProfile.displayName != this.displayName) {
+        newDisplayName = this.displayName;
+        updated = true;
+      }
+      console.log("currProfile.avatar:", currProfile.avatar);
+      if (currProfile.avatar != this.avatarData) {
+        newAvatar = this.avatarData;
+        updated = true;
+      }
+
+      var pub = {
+        FN: newDisplayName,
+        Photo: {
+          Data: newAvatar,
+          Type: "png"
+        }
+      };
+
+      if (updated) {
+        store.dispatch("handleUpdateProfile", pub);
+      }
+    }
+  },
   computed: {
     profile() {
       return store.getters.getProfile;
