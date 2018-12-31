@@ -13,6 +13,7 @@ const appStore = {
     profile: {},
     selectedTopic: {},
     contacts: [],
+    loadingContacts: true,
     messages: [
       {
         content:
@@ -25,6 +26,9 @@ const appStore = {
     setProfile: (state, profile) => {
       state.profile = profile;
     },
+    setLoadingContacts: (state, loading) => {
+      state.loadingContacts = loading;
+    },
     handleUpdateProfile: (state, pub) => {
       state.tinodeClient
         .getMeTopic()
@@ -34,6 +38,12 @@ const appStore = {
         });
       if (pub["FN"] != state.profile.displayName) {
         state.profile.displayName = pub["FN"];
+      }
+      if (pub["Photo"] != state.profile.avatar) {
+        console.log("old photo:", state.profile.avatar);
+        console.log("new photo:");
+        console.log(pub["Photo"]);
+        state.profile.avatar = pub["Photo"];
       }
     },
     handleNewContact: (state, contact) => {
@@ -48,12 +58,10 @@ const appStore = {
       var msg = topic.createMessage(messageInput, true);
       topic.publishMessage(msg).then(() => {
         // update UI after sending message to server
-        state.messages.push({
-          from: state.profile.displayName,
-          content: messageInput,
-          ts: Date.now().toString(),
-          seq: topic._maxSeq
-        });
+        msg.from = state.profile.tinodeID;
+        console.log("msg:");
+        console.log(msg);
+        state.messages.push(msg);
       });
     },
     renderMessages: state => {
@@ -78,6 +86,9 @@ const appStore = {
   actions: {
     setProfile: (context, profile) => {
       context.commit("setProfile", profile);
+    },
+    setLoadingContacts: (context, loading) => {
+      context.commit("setLoadingContacts", loading);
     },
     handleUpdateProfile: (context, data) => {
       context.commit("handleUpdateProfile", data);
@@ -107,6 +118,9 @@ const appStore = {
     getProfile: state => {
       return state.profile;
     },
+    isLoadingContacts: state => {
+      return state.loadingContacts;
+    },
     isAuthenticated: state => {
       return state.tinodeClient._authenticated;
     },
@@ -118,6 +132,12 @@ const appStore = {
     },
     getMessages: state => {
       return state.messages;
+    },
+    getTopic: state => topic => {
+      return state.tinodeClient.getTopic(topic);
+    },
+    getClient: state => {
+      return state.tinodeClient;
     }
   }
 };

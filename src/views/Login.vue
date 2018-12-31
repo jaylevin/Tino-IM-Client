@@ -115,31 +115,21 @@ export default {
           this.$tinodeClient.onDataMessage = function(data) {
             console.log("data:", data);
             if (store.getters.getSelectedTopic.name == data.topic) {
-              var topic = comp.$tinodeClient.getTopic(data.topic);
-              var outgoing = comp.$tinodeClient.getCurrentUserID() == data.from;
-              var from = outgoing
-                ? store.getters.getProfile.displayName
-                : topic.public.FN;
-              var message = {
-                from: from,
-                content: data.content,
-                ts: data.ts,
-                seq: data.seq
-              };
-              store.dispatch("handleNewMessage", message);
+              store.dispatch("handleNewMessage", data);
             } else {
               // update unread count
             }
           };
 
           me.onMeta = function(meta) {
-            if (meta.sub) {
+            if (meta.sub && store.getters.isLoadingContacts) {
               // Load contacts list
               meta.sub.forEach(function(sub) {
                 var topic = comp.$tinodeClient.getTopic(sub.topic);
                 store.dispatch("handleNewContact", topic);
                 var subRequest = topic.subscribe();
               });
+              store.dispatch("setLoadingContacts", false);
               console.log("Successfully loaded contacts list.");
             } else if (meta.desc) {
               console.log("meta desc:", meta.desc);

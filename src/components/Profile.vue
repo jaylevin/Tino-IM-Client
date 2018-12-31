@@ -1,12 +1,12 @@
 <template>
   <div class="columns">
     <div class="column is-one-third">
-        <figure>
-          <img src="https://bulma.io/images/placeholders/480x480.png">
-        </figure>
+      <figure class="image is-128x128">
+        <img class="is-rounded" :src="avatarURI" v-model="avatarURI">
+      </figure>
       <div class="file has-name is-fullwidth">
         <label class="file-label">
-          <input class="file-input" type="file" name="resume">
+          <input class="file-input" @change="onAvatarChange" type="file" name="resume">
           <span class="file-cta">
             <span class="file-icon">
               <i class="fas fa-upload"></i>
@@ -52,11 +52,29 @@ export default {
     return {
       username: store.getters.getProfile.username,
       displayName: store.getters.getProfile.displayName,
-      avatarData: store.getters.getProfile.avatar.Data,
+      avatarURI: store.getters.getProfile.avatar.Data,
       email: ""
     };
   },
   methods: {
+    onAvatarChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createImage(files[0]);
+    },
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = e => {
+        vm.avatarURI = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage: function(e) {
+      this.form.avatarURI = "";
+    },
     handleUpdateAccount() {
       var currProfile = store.getters.getProfile;
       var newDisplayName = currProfile.displayName;
@@ -68,8 +86,8 @@ export default {
         updated = true;
       }
       console.log("currProfile.avatar:", currProfile.avatar);
-      if (currProfile.avatar != this.avatarData) {
-        newAvatar = this.avatarData;
+      if (currProfile.avatar != this.avatarURI) {
+        newAvatar = this.avatarURI;
         updated = true;
       }
 

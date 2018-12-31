@@ -7,9 +7,9 @@
       Contacts
     </p>
     <ul class="menu-list">
-      <li v-for="topic in contacts" @click="selectTopic(topic)">
-        <a :class="{'is-active': selectedTopic == topic}">
-        {{ topic.public.FN }}
+      <li v-for="contact in contacts" @click="selectTopic(contact)">
+        <a :class="{'is-active': selectedTopic == contact}">
+        {{ contact.public.FN }}
         </a>
       </li>
     </ul>
@@ -21,14 +21,12 @@ import store from "@/store.js";
 
 export default {
   name: "ContactsMenu",
-  data() {
-    return {};
-  },
   computed: {
     selectedTopic() {
       return store.getters.getSelectedTopic;
     },
     contacts() {
+      console.log("computed", store.getters.getContacts);
       return store.getters.getContacts;
     }
   },
@@ -36,7 +34,7 @@ export default {
     addContact: function() {
       var person = prompt(
         "Enter the name of the userID of the friend you would like to request",
-        ""
+        "test"
       );
 
       if (person != null) {
@@ -44,7 +42,7 @@ export default {
       }
     },
     selectTopic: function(contact) {
-      if (contact.name != store.getters.getSelectedTopic.name) {
+      if (contact.topic != store.getters.getSelectedTopic.topic) {
         store.dispatch("selectTopic", contact);
         console.log("Selected contact:", store.getters.getSelectedTopic);
       }

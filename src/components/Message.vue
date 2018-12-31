@@ -10,7 +10,7 @@
 				<figure class="image is-64x64"
 								:class="{'profile-left': !isIncoming,
 												'profile-right': isIncoming}">
-				    <img class="is-rounded" :src="profileImageURI">
+				    <img class="is-rounded" :src="avatarURI" v-model="avatarURI">
 				</figure>
 					<div class="message-head">
 						<div class="delete-msg" v-if="contextMenu">
@@ -21,7 +21,7 @@
 								</span>
 							</a>
 						</div>
-				    {{ from }}
+				    {{ fromFN }}
 						<small class="timestamp">  {{ ts }} </small>
 				  </div>
 				  <div class="content">
@@ -39,7 +39,6 @@ export default {
   props: ["from", "ts", "content", "seq"],
   data() {
     return {
-      profileImageURI: defaultAvatar,
       interval: false,
       contextMenu: false,
       count: 0
@@ -66,9 +65,19 @@ export default {
     }
   },
   computed: {
+    avatarURI() {
+      return this.isIncoming
+        ? store.getters.getTopic(this.from).public.Photo.Data
+        : store.getters.getProfile.avatar.Data;
+    },
     // Styles incoming messages differently. See the above :class binding.
     isIncoming() {
-      return this.from != store.getters.getProfile.displayName;
+      return this.from != store.getters.getProfile.tinodeID;
+    },
+    fromFN() {
+      return this.from == store.getters.getProfile.tinodeID
+        ? "Me"
+        : store.getters.getTopic(this.from).public.FN;
     }
   }
 };

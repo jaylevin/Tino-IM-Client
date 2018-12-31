@@ -3,8 +3,8 @@
     <div class="column is-full">
       <ul id="messages" tabindex="1" class="messages-ul">
           <message v-for="message in messages"
-                   :ts="message.ts"
                    :from="message.from"
+                   :ts="message.ts"
                    :content="message.content"
                    :seq="message.seq">
           </message>
