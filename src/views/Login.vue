@@ -114,22 +114,33 @@ export default {
 
           this.$tinodeClient.onDataMessage = function(data) {
             console.log("data:", data);
-            if (store.getters.getSelectedTopic.name == data.topic) {
-              store.dispatch("handleNewMessage", data);
-            } else {
-              // update unread count
-            }
+            // if (store.getters.getSelectedTopic.name == data.topic) {
+            //   store.dispatch("handleNewMessage", data);
+            // } else {
+            //   // update unread count
+            // }
           };
 
           me.onMeta = function(meta) {
             if (meta.sub && store.getters.isLoadingContacts) {
-              // Load contacts list
-              meta.sub.forEach(function(sub) {
-                var topic = comp.$tinodeClient.getTopic(sub.topic);
-                store.dispatch("handleNewContact", topic);
-                var subRequest = topic.subscribe();
+              // Loop through each contact in the client's contact list
+              let messagesCache = new Map();
+              meta.sub.forEach(sub => {
+                let messages = new Array();
+                var contact = comp.$tinodeClient.getTopic(sub.topic);
+                var subRequest = contact.subscribe().then(() => {
+                  store.dispatch("handleNewContact", contact);
+
+                  contact.getMessagesPage(20, true).then(() => {
+                    contact.messages(msg => {
+                      messages.push(msg);
+                      console.log("pushing msg:", msg);
+                    });
+                    messagesCache.set(contact.topic, messages);
+                  });
+                });
               });
-              store.dispatch("setLoadingContacts", false);
+              store.dispatch("renderCachedMessages", messagesCache);
               console.log("Successfully loaded contacts list.");
             } else if (meta.desc) {
               console.log("meta desc:", meta.desc);
@@ -143,7 +154,6 @@ export default {
             }
           };
           me.subscribe({ what: "sub desc" });
-          comp.$router.push({ name: "chat" });
         })
         .catch(err => {
           comp.form.setError(err.message);

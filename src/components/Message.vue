@@ -76,7 +76,7 @@ export default {
     },
     fromFN() {
       return this.from == store.getters.getProfile.tinodeID
-        ? "Me"
+        ? "You"
         : store.getters.getTopic(this.from).public.FN;
     }
   }

@@ -9,7 +9,7 @@ export function NewClient() {
   let client = new Tinode(APP_NAME, HOST, API_KEY, null, false);
   client.contacts = {};
 
-  client.enableLogging(true);
+  // client.enableLogging(true);
   client.onDisconnect = function() {
     console.log("Client has disconnected!");
     router.push({ name: "landing" });

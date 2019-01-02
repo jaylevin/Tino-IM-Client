@@ -3,23 +3,25 @@ import Vuex from "vuex";
 import router from "./router";
 import * as tinode from "@/tinode.js";
 
+// Initialized once
 const tClient = tinode.NewClient();
 
 Vue.prototype.$tinodeClient = tClient;
 Vue.use(Vuex);
 const appStore = {
   state: {
+    // Client
     tinodeClient: tClient,
     profile: {},
-    selectedTopic: {},
+
+    // Contacts
     contacts: [],
     loadingContacts: true,
-    messages: [
-      {
-        content:
-          "Start a new conversation or group chat using the buttons on the left."
-      }
-    ]
+    selectedTopic: {},
+
+    //Messages
+    messagesCache: new Map(),
+    currentMessages: new Array()
   },
 
   mutations: {
@@ -40,9 +42,6 @@ const appStore = {
         state.profile.displayName = pub["FN"];
       }
       if (pub["Photo"] != state.profile.avatar) {
-        console.log("old photo:", state.profile.avatar);
-        console.log("new photo:");
-        console.log(pub["Photo"]);
         state.profile.avatar = pub["Photo"];
       }
     },
@@ -50,7 +49,11 @@ const appStore = {
       state.contacts.push(contact);
     },
     handleNewMessage: (state, message) => {
-      state.messages.push(message);
+      if (!state.messagesCache.get(message.topic)) {
+        // Initialize new array
+        state.messagesCache.set(message.topic, new Array());
+      }
+      state.messagesCache.get(message.topic).push(message);
     },
     handleSendMessage: (state, messageInput) => {
       var currentTopicID = state.selectedTopic.name;
@@ -59,19 +62,21 @@ const appStore = {
       topic.publishMessage(msg).then(() => {
         // update UI after sending message to server
         msg.from = state.profile.tinodeID;
-        console.log("msg:");
-        console.log(msg);
-        state.messages.push(msg);
+        state.currentMessages.push(msg);
+        state.messagesCache.set(msg.topic, state.currentMessages);
       });
     },
+    renderCachedMessages: (state, messagesCache) => {
+      // This mutation is invoked once per topic when a client first logs in,
+      // Description: Fetches the 20 most recent messages from server,
+      // into state.messagesCache
+      state.messagesCache = messagesCache;
+      router.push({ name: "chat" });
+    },
     renderMessages: state => {
-      state.messages = [];
       var currentTopicID = state.selectedTopic.name;
-      var topic = state.tinodeClient.getTopic(currentTopicID);
-      if (topic) {
-        topic.getMessagesPage(20).catch(err => {
-          console.log("Error fetching messages:", err.message);
-        });
+      if (state.messagesCache.get(currentTopicID)) {
+        state.currentMessages = state.messagesCache.get(currentTopicID);
       }
     },
     selectTopic: (state, topic) => {
@@ -98,6 +103,10 @@ const appStore = {
     },
     handleNewMessage: (context, message) => {
       context.commit("handleNewMessage", message);
+    },
+    renderCachedMessages: (context, messagesCache) => {
+      context.commit("renderCachedMessages", messagesCache);
+      context.commit("setLoadingContacts", false);
     },
     handleSendMessage: (context, messageInput) => {
       context.commit("handleSendMessage", messageInput);
@@ -131,7 +140,7 @@ const appStore = {
       return state.selectedTopic;
     },
     getMessages: state => {
-      return state.messages;
+      return state.currentMessages;
     },
     getTopic: state => topic => {
       return state.tinodeClient.getTopic(topic);
