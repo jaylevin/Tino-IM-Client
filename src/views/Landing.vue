@@ -2,7 +2,7 @@
   <div class="landing">
     <h1>Landing Page</h1>
     <div class="content">
-      You start here.
+      Start your journey here.
     </div>
   </div>
 </template>
@@ -17,8 +17,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$accent: #00a1ff;
-
 .landing {
   color: $accent;
   background-color: rgba(0, 0, 0, 0.4);

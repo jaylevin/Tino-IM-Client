@@ -51,7 +51,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$accent: #00a1ff;
 .menu {
   padding-right: 5px;
   border-right: 1px solid grey;

@@ -1,10 +1,13 @@
 <template>
   <div class="chat">
     <div class="columns is-full-height">
-      <div class="column is-2 is-sidebar-menu">
+      <div class="column is-3 is-sidebar-menu">
         <contacts-menu></contacts-menu>
       </div>
       <div class="column">
+        <h1>Messages
+          <h1 v-if="selectedTopicName">with {{ selectedTopicName}}</h1>
+        </h1>
         <messages-list-view></messages-list-view>
       </div>
     </div>
@@ -20,6 +23,17 @@ export default {
   name: "Chat",
   props: {},
   components: { ContactsMenu, MessagesListView },
+  computed: {
+    selectedTopic() {
+      return store.getters.getSelectedTopic;
+    },
+    selectedTopicName() {
+      if (this.selectedTopic.public) {
+        console.log(this.selectedTopic);
+        return this.selectedTopic.public.FN;
+      }
+    }
+  },
   mounted() {
     if (!this.$tinodeClient._authenticated) {
       this.$router.push({ name: "landing" });
@@ -32,5 +46,13 @@ export default {
 <style scoped lang="scss">
 .chat {
   margin: 15px;
+}
+h1 {
+  display: inline-block;
+  color: white;
+  font-weight: bold;
+  margin: 3px;
+  font-size: 1.25em;
+  margin-bottom: 15px;
 }
 </style>
