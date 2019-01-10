@@ -50,6 +50,7 @@
 <script>
 import axios from "axios";
 import store from "@/store.js";
+import router from "@/router.js";
 
 class Form {
   constructor() {
@@ -151,6 +152,7 @@ export default {
                 displayName: meta.desc.public.FN,
                 avatar: meta.desc.public.Photo
               });
+              router.push({ name: "chat" });
             }
           };
           me.subscribe({ what: "sub desc" });

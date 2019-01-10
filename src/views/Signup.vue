@@ -106,14 +106,40 @@
 
 <script>
 import axios from "axios";
-
+import store from "@/store.js";
 class Form {
   constructor() {
     this.fullName = "";
     this.username = "";
     this.email = "";
+    this.password = "";
+    this.passwordconfirm = "";
     this.avatarData = "https://bulma.io/images/placeholders/128x128.png";
     this.errors = [];
+  }
+  submit() {
+    if (this.password == this.passwordconfirm) {
+      let client = store.getters.getClient;
+      let tinode = client.connect().then(() => {
+        return client
+          .createAccountBasic(this.username, this.password, {
+            public: {
+              FN: this.fullName,
+              Photo: {
+                Data: this.avatarData,
+                Type: "png"
+              }
+            },
+            tags: [this.email, this.fullName, this.username]
+          })
+          .then(() => {
+            console.log("Account created successfully");
+          });
+      });
+    } else {
+      this.errors.push("Your passwords do not match!");
+      console.log("passwords don't match!");
+    }
   }
 }
 
@@ -152,24 +178,7 @@ export default {
         this.form.email,
         this.form.avatarData
       );
-      axios
-        .post(`http://localhost:8000/users`, {
-          fullName: this.form.fullName,
-          username: this.form.username,
-          password: this.form.password,
-          email: this.form.email,
-          avatarData: this.form.avatarData
-        })
-        .then(response => {
-          console.log("response:", response);
-          if (response.status == 200) {
-            // account was created successfully
-            this.$router.push({ name: "login" });
-          }
-        })
-        .catch(e => {
-          this.form.errors.push(e);
-        });
+      this.form.submit();
     }
   }
 };

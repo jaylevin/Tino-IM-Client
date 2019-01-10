@@ -71,7 +71,6 @@ const appStore = {
       // Description: Fetches the 20 most recent messages from server,
       // into state.messagesCache
       state.messagesCache = messagesCache;
-      router.push({ name: "chat" });
     },
     renderMessages: state => {
       var currentTopicID = state.selectedTopic.name;
