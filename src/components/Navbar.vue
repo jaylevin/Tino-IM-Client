@@ -1,10 +1,10 @@
 <template>
-  <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+  <nav @mouseleave="navBurgerActivated = false" class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="logo">
         <router-link class="navbar-item" :to="{ name: 'landing' }" @click="tab='home'">Tino IM</router-link>
       </a>
-      <a role="button" @click="navBurgerActivated = !navBurgerActivated" :class="{'is-active': navBurgerActivated}" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <a role="button" @mouseover="navBurgerActivated = !navBurgerActivated"  :class="{'is-active': navBurgerActivated}" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -27,7 +27,7 @@
         </a>
       </div>
       <div v-if="isAuthenticated">
-        <p style="color:white; padding-top:5px;"> Logged in as: <span style="color:#00a1ff">{{ $tinodeClient._login }}</span></p>
+        <p style="color:white; padding-top:5px;"> Logged in as: <span style="color:#00a1ff">{{ displayName }}</span></p>
         <p style="color:white;"> Tinode ID: <span style="color:#00a1ff">{{ $tinodeClient._myUID }}</span></p>
       </div>
 
@@ -57,6 +57,7 @@ import store from "@/store.js";
 export default {
   name: "Navbar",
   props: ["tinodeClient"],
+
   data() {
     return {
       navBurgerActivated: false,
@@ -64,8 +65,11 @@ export default {
     };
   },
   computed: {
+    displayName() {
+      return store.getters.getProfile.displayName;
+    },
     ...mapGetters({
-      // map `this.isAuthenticated` to `this.$store.getters.isisAuthenticated`
+      // map `this.isAuthenticated` to `this.$store.getters.isAuthenticated`
       isAuthenticated: "isAuthenticated"
     })
   },
@@ -79,10 +83,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$accent: #00a1ff;
-$grey-darker: hsl(0, 0%, 21%) !default;
-$grey-dark: hsl(0, 0%, 29%) !default;
-
 .is-dark {
   background: $grey-darker;
 }

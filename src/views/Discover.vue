@@ -17,8 +17,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$accent: #00a1ff;
-
 .discover {
   color: $accent;
   background-color: rgba(0, 0, 0, 0.4);

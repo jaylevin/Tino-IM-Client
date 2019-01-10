@@ -51,14 +51,23 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-$accent: #00a1ff;
 .menu {
   padding-right: 5px;
   border-right: 1px solid grey;
+
+}
+p{
+  color: white;
+  font-weight: bold;
+}
+
+li a {
+  color: white;
 }
 .chat {
   text-align: left;
   margin: 10px;
+
 }
 .avatar {
   margin-left: 15px;
@@ -73,4 +82,6 @@ $accent: #00a1ff;
   font-size: 22px;
   text-align: left;
 }
+
+
 </style>
