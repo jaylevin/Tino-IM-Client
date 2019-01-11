@@ -10,17 +10,23 @@
       <form @submit.prevent="form.handleSubmit">
         <div class="field">
           <label class="label">Display Name</label>
-          <div class="control">
-            <input :class="{'is-danger': !form.validateDisplayname(), 'is-success': form.validateDisplayname() && form.displayName}" class="input" type="text" placeholder="Your desired display name" v-model="form.displayName">
+          <div class="control has-icons-left has-icons-right">
+            <input :class="{'is-danger': !form.validateDisplayName() && form.displayName, 'is-success': form.validateDisplayName() && form.displayName}" class="input" type="text" placeholder="Your desired display name" v-model="form.displayName">
+            <span class="icon is-small is-left">
+              <i class="fas fa-user"></i>
+            </span>
+            <span v-if="form.displayName.length" class="icon is-small is-right">
+              <i v-if="form.validateDisplayName()" class="fas fa-check"></i>
+            </span>
           </div>
-          <p v-if="!form.validateDisplayname()" class="help is-danger">Display name must be atleast 6 characters long.</p>
+          <p v-if="!form.validateDisplayName() && form.displayName" class="help is-danger">Display name must be atleast 6 characters long.</p>
 
         </div>
 
         <div class="field">
           <label class="label">Username</label>
           <div class="control has-icons-left has-icons-right">
-            <input :class="{'is-danger': !form.validateUsername(), 'is-success': form.validateUsername() && form.username}" class="input" type="text" placeholder="Your username" v-model="form.username">
+            <input :class="{'is-danger': !form.validateUsername() && form.username, 'is-success': form.validateUsername() && form.username}" class="input" type="text" placeholder="Your username" v-model="form.username">
             <span class="icon is-small is-left">
               <i class="fas fa-user"></i>
             </span>
@@ -28,13 +34,13 @@
               <i v-if="form.validateUsername()" class="fas fa-check"></i>
             </span>
           </div>
-          <p v-if="!form.validateUsername()" class="help is-danger">Username must be atleast 6 characters long.</p>
+          <p v-if="!form.validateUsername() && form.username" class="help is-danger">Username must be atleast 6 characters long.</p>
         </div>
 
         <div class="field">
           <label class="label">Email</label>
           <div class="control has-icons-left has-icons-right">
-            <input :class="{'is-danger': !form.validateEmail(), 'is-success': form.validateEmail() && form.email}" class="input" type="email" placeholder="Your email address" v-model="form.email">
+            <input :class="{'is-danger': !form.validateEmail() && form.email, 'is-success': form.validateEmail() && form.email}" class="input" type="email" placeholder="Your email address" v-model="form.email">
             <span class="icon is-small is-left">
               <i class="fas fa-envelope"></i>
             </span>
@@ -42,7 +48,7 @@
               <i v-if="form.validateEmail()" class="fas fa-check"></i>
             </span>
           </div>
-          <p v-if="!form.validateEmail()" class="help is-danger">This email is invalid.</p>
+          <p v-if="!form.validateEmail() && form.email" class="help is-danger">This email is invalid.</p>
         </div>
 
         <div class="field">
@@ -68,6 +74,7 @@
               <i class="fas fa-check"></i>
             </span>
           </div>
+          <p v-if="!form.validatePasswords()" class="help is-danger">Passwords do not match.</p>
         </div>
 
         <div class="column is-one-third">
@@ -146,7 +153,7 @@ class Form {
   validateForm() {
     return (
       this.validateEmail() &&
-      this.validateDisplayname() &&
+      this.validateDisplayName() &&
       this.validateUsername() &&
       this.validatePasswords() &&
       this.email &&
@@ -160,15 +167,13 @@ class Form {
   validateEmail() {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let valid = true;
-    if (this.email.length) {
-      valid = re.test(this.email);
-    }
-    console.log("valid email:", valid);
+    valid = re.test(this.email);
+
     return valid;
   }
-  validateDisplayname() {
+  validateDisplayName() {
     let valid = true;
-    if (this.displayName.length < 6 && this.displayName.length) {
+    if (this.displayName.length < 6) {
       valid = false;
     }
     console.log("valid display:", valid);
@@ -176,7 +181,7 @@ class Form {
   }
   validateUsername() {
     let valid = true;
-    if (this.username.length < 6 && this.username.length) {
+    if (this.username.length < 6) {
       valid = false;
     }
     console.log("valid username:", valid);
@@ -185,30 +190,25 @@ class Form {
 
   validatePasswords() {
     let valid = true;
-    if (
-      this.password &&
-      this.passwordconfirm &&
-      this.passwordconfirm != this.password
-    ) {
+    if (this.passwordconfirm != this.password) {
       valid = false;
     }
-    console.log("valid pass:", valid);
     return valid;
   }
 
   handleSubmit() {
     this.errors = [];
 
-    if (this.validateDisplayname()) {
+    if (!this.validateDisplayName() && this.displayName) {
       this.newError("Display name must be at least 6 characters long.");
     }
-    if (this.validateUsername()) {
+    if (!this.validateUsername() && this.username) {
       this.newError("Username must be at least 6 characters long.");
     }
-    if (this.validateEmail()) {
+    if (!this.validateEmail() && this.email) {
       this.newError("Invalid email address.");
     }
-    if (this.validatePasswords()) {
+    if (!this.validatePasswords() && this.password && this.passwordconfirm) {
       this.newError("Passwords do not match.");
     }
     if (this.validateForm()) {
@@ -290,10 +290,6 @@ export default {
   }
   margin-bottom: 25px;
 }
-.form {
-  padding: 15px;
-  background-color: rgba(0, 0, 0, 0.33);
-}
 label {
   color: white;
   font-weight: lighter;
@@ -301,8 +297,9 @@ label {
 .signup {
   text-align: left;
   margin: 5em;
-  margin-left: 15%;
-  margin-right: 15%;
   background-color: rgba(0, 0, 0, 0.33);
+  .form {
+    padding: 2%;
+  }
 }
 </style>

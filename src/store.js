@@ -8,6 +8,7 @@ const tClient = tinode.NewClient();
 
 Vue.prototype.$tinodeClient = tClient;
 Vue.use(Vuex);
+
 const appStore = {
   state: {
     // Client
@@ -21,13 +22,33 @@ const appStore = {
 
     //Messages
     messagesCache: new Map(),
-    currentMessages: new Array()
+    currentMessages: new Array(),
+    // Message deleting
+    isDeleting: false,
+    msgsToDelete: new Array()
   },
 
   mutations: {
     setProfile: (state, profile) => {
       state.profile = profile;
     },
+    setIsDeleting: (state, deleting) => {
+      state.isDeleting = deleting;
+    },
+    selectMsgForDel: (state, msg) => {
+      if (msg.markedToDel) {
+        msg.markedToDel = false;
+        var msgs = state.msgsToDelete;
+        msgs = msgs.filter(function(val, index, arr) {
+          return val != msg;
+        });
+        state.msgsToDelete = filtered;
+      } else {
+        msg.markedToDel = true;
+        state.msgsToDelete.push(msg);
+      }
+    },
+
     setLoadingContacts: (state, loading) => {
       state.loadingContacts = loading;
     },
@@ -91,6 +112,12 @@ const appStore = {
     setProfile: (context, profile) => {
       context.commit("setProfile", profile);
     },
+    setIsDeleting: (context, deleting) => {
+      context.commit("setIsDeleting", deleting);
+    },
+    selectMsgForDel: (context, msg) => {
+      context.commit("selectMsgForDel", msg);
+    },
     setLoadingContacts: (context, loading) => {
       context.commit("setLoadingContacts", loading);
     },
@@ -146,6 +173,15 @@ const appStore = {
     },
     getClient: state => {
       return state.tinodeClient;
+    },
+    getDelRange: state => {
+      return state.delRange;
+    },
+    isDeleting: state => {
+      return state.isDeleting;
+    },
+    getMsgsToDelete: state => {
+      return state.msgsToDelete;
     }
   }
 };

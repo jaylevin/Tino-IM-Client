@@ -10,6 +10,12 @@
                      :seq="message.seq">
             </message>
         </ul>
+        <a v-if="isDeleting" @click="cancelDelMsgs()" class="button is-danger delete-btn">
+          Cancel
+        </a>
+        <a v-if="isDeleting" @click="deleteMsgs()" class="button is-danger delete-btn">
+          Delete Selected
+        </a>
       </div>
     </div>
 
@@ -62,12 +68,49 @@ export default {
   computed: {
     messages() {
       return store.getters.getMessages;
+    },
+    isDeleting() {
+      return store.getters.isDeleting;
+    },
+    delRange() {
+      return store.getters.delRange;
     }
   },
   methods: {
     sendMessage(messageInput) {
       store.dispatch("handleSendMessage", messageInput);
       this.messageInput = "";
+    },
+    deleteMsgs() {
+      let msgs = store.getters.getMsgsToDelete;
+      msgs.sort(function(a, b) {
+        return a.seq - b.seq;
+      });
+      console.log("sorted", msgs);
+      let delRanges = [];
+
+      var temp = [];
+
+      for (var i = 0; i < msgs.length; ++i) {
+        if (i == 0) {
+          temp.push(msgs[i].seq); // add the first element and continue
+          continue;
+        }
+        if (msgs[i - 1].seq != msgs[i].seq - 1) {
+          // if the current is not sequential
+          // add the current temporary array to arrays result
+          delRanges.push(temp);
+
+          // clear the temporary array and start over
+          temp = [];
+        }
+        temp.push(msgs[i].seq);
+      }
+      delRanges.push(temp);
+      console.log("delRanges:", delRanges);
+    },
+    cancelDelMsgs() {
+      store.dispatch("setIsDeleting", false);
     }
   }
 };
@@ -103,7 +146,10 @@ div.message-input {
     outline: 0 !important;
   }
 }
-
+.delete-btn {
+  float: left;
+  margin-right: 5px;
+}
 .messages {
   padding: 5px;
   margin-right: 15px;
