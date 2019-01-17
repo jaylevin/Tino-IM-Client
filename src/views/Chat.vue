@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import store from "@/store.js";
+import store from "@/store/store.js";
 import ContactsMenu from "@/components/ContactsMenu.vue";
 import MessagesListView from "@/components/MessagesListView.vue";
 
@@ -23,22 +23,7 @@ export default {
   name: "Chat",
   props: {},
   components: { ContactsMenu, MessagesListView },
-  computed: {
-    selectedTopic() {
-      return store.getters.getSelectedTopic;
-    },
-    selectedTopicName() {
-      if (this.selectedTopic.public) {
-        console.log(this.selectedTopic);
-        return this.selectedTopic.public.FN;
-      }
-    }
-  },
-  mounted() {
-    if (!this.$tinodeClient._authenticated) {
-      this.$router.push({ name: "landing" });
-    }
-  }
+  computed: {}
 };
 </script>
 

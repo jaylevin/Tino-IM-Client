@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import store from "@/store.js";
+import store from "@/store/store.js";
 export default {
   name: "Landing",
   props: {}
@@ -21,7 +21,7 @@ export default {
   color: $accent;
   background-color: rgba(0, 0, 0, 0.4);
   padding: 5%;
-  margin-top: 15%;
+  margin-top: 10%;
   margin-left: 15%;
   margin-right: 15%;
   h1 {

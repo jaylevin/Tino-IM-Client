@@ -1,6 +1,6 @@
 <template>
   <div class="signup">
-    <div class="errors" v-if="form.errors.length">
+    <div class="errors" v-if="">
       <div v-if="!err.dismissed" v-for="err in form.errors" class="notification is-danger">
         <button @click="err.dismiss()" class="delete"></button>
         {{err.msg}}
@@ -11,70 +11,60 @@
         <div class="field">
           <label class="label">Display Name</label>
           <div class="control has-icons-left has-icons-right">
-            <input :class="{'is-danger': !form.validateDisplayName() && form.displayName, 'is-success': form.validateDisplayName() && form.displayName}" class="input" type="text" placeholder="Your desired display name" v-model="form.displayName">
+            <input class="input" type="text" placeholder="Your desired display name" v-model="form.displayName">
             <span class="icon is-small is-left">
               <i class="fas fa-user"></i>
             </span>
-            <span v-if="form.displayName.length" class="icon is-small is-right">
-              <i v-if="form.validateDisplayName()" class="fas fa-check"></i>
-            </span>
+
           </div>
-          <p v-if="!form.validateDisplayName() && form.displayName" class="help is-danger">Display name must be atleast 6 characters long.</p>
 
         </div>
 
         <div class="field">
           <label class="label">Username</label>
           <div class="control has-icons-left has-icons-right">
-            <input :class="{'is-danger': !form.validateUsername() && form.username, 'is-success': form.validateUsername() && form.username}" class="input" type="text" placeholder="Your username" v-model="form.username">
+            <input  class="input" type="text" placeholder="Your desired username" v-model="form.username">
             <span class="icon is-small is-left">
               <i class="fas fa-user"></i>
             </span>
-            <span v-if="form.username.length" class="icon is-small is-right">
-              <i v-if="form.validateUsername()" class="fas fa-check"></i>
+            <span class="icon is-small is-right">
+              <i  class="fas fa-check"></i>
             </span>
           </div>
-          <p v-if="!form.validateUsername() && form.username" class="help is-danger">Username must be atleast 6 characters long.</p>
         </div>
 
         <div class="field">
           <label class="label">Email</label>
           <div class="control has-icons-left has-icons-right">
-            <input :class="{'is-danger': !form.validateEmail() && form.email, 'is-success': form.validateEmail() && form.email}" class="input" type="email" placeholder="Your email address" v-model="form.email">
+            <input class="input" type="email" placeholder="Your email address" v-model="form.email">
             <span class="icon is-small is-left">
               <i class="fas fa-envelope"></i>
             </span>
-            <span v-if="form.email" class="icon is-small is-right">
-              <i v-if="form.validateEmail()" class="fas fa-check"></i>
+            <span class="icon is-small is-right">
+              <i  class="fas fa-check"></i>
             </span>
           </div>
-          <p v-if="!form.validateEmail() && form.email" class="help is-danger">This email is invalid.</p>
         </div>
 
         <div class="field">
           <label class="label">Password</label>
           <div class="control has-icons-left has-icons-right">
-            <input :class="{'is-danger': !form.validatePasswords(), 'is-success': form.validatePasswords() && form.passwordconfirm && form.password}" class="input" type="password" placeholder="Your password" v-model="form.password">
+            <input class="input" type="password" placeholder="Your password" v-model="form.password">
             <span class="icon is-small is-left">
               <i class="fa fa-key"></i>
             </span>
-            <span v-if="form.validatePasswords() && form.password && form.passwordconfirm" class="icon is-small is-right">
-              <i v-if="form.validatePasswords()" class="fas fa-check"></i>
-            </span>
+
           </div>
         </div>
         <div class="field">
           <label class="label">Confirm Password</label>
           <div class="control has-icons-left has-icons-right">
-            <input :class="{'is-danger': !form.validatePasswords(), 'is-success': form.validatePasswords() && form.passwordconfirm && form.password}" class="input" type="password" placeholder="Confirm password" v-model="form.passwordconfirm">
+            <input class="input" type="password" placeholder="Confirm password" v-model="form.passwordconfirm">
             <span class="icon is-small is-left">
               <i class="fa fa-key"></i>
             </span>
-            <span v-if="form.validatePasswords() && form.password && form.passwordconfirm" class="icon is-small is-right">
-              <i class="fas fa-check"></i>
-            </span>
+
           </div>
-          <p v-if="!form.validatePasswords()" class="help is-danger">Passwords do not match.</p>
         </div>
 
         <div class="column is-one-third">
@@ -121,143 +111,16 @@
 
 <script>
 import axios from "axios";
-import store from "@/store.js";
-
-class Error {
-  constructor() {
-    this.dismissed = false;
-    this.msg = "";
-  }
-  dismiss() {
-    this.dismissed = true;
-  }
-}
-
-class Form {
-  constructor() {
-    this.displayName = "";
-    this.username = "";
-    this.email = "";
-    this.password = "";
-    this.passwordconfirm = "";
-    this.avatarData = "https://bulma.io/images/placeholders/128x128.png";
-    this.errors = [];
-  }
-
-  newError(msg) {
-    let err = new Error();
-    err.msg = msg;
-    this.errors.push(err);
-  }
-
-  validateForm() {
-    return (
-      this.validateEmail() &&
-      this.validateDisplayName() &&
-      this.validateUsername() &&
-      this.validatePasswords() &&
-      this.email &&
-      this.displayName &&
-      this.password &&
-      this.passwordconfirm &&
-      this.username
-    );
-  }
-
-  validateEmail() {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let valid = true;
-    valid = re.test(this.email);
-
-    return valid;
-  }
-  validateDisplayName() {
-    let valid = true;
-    if (this.displayName.length < 6) {
-      valid = false;
-    }
-    console.log("valid display:", valid);
-    return valid;
-  }
-  validateUsername() {
-    let valid = true;
-    if (this.username.length < 6) {
-      valid = false;
-    }
-    console.log("valid username:", valid);
-    return valid;
-  }
-
-  validatePasswords() {
-    let valid = true;
-    if (this.passwordconfirm != this.password) {
-      valid = false;
-    }
-    return valid;
-  }
-
-  handleSubmit() {
-    this.errors = [];
-
-    if (!this.validateDisplayName() && this.displayName) {
-      this.newError("Display name must be at least 6 characters long.");
-    }
-    if (!this.validateUsername() && this.username) {
-      this.newError("Username must be at least 6 characters long.");
-    }
-    if (!this.validateEmail() && this.email) {
-      this.newError("Invalid email address.");
-    }
-    if (!this.validatePasswords() && this.password && this.passwordconfirm) {
-      this.newError("Passwords do not match.");
-    }
-    if (this.validateForm()) {
-      // this.errors.size == 0
-      let client = store.getters.getClient;
-      let tinode = client.connect().then(() => {
-        return client
-          .createAccountBasic(this.username, this.password, {
-            public: {
-              FN: this.fullName,
-              Photo: {
-                Data: this.avatarData,
-                Type: "png"
-              }
-            },
-            tags: [this.email]
-          })
-          .then(() => {
-            axios
-              .post(`http://localhost:8000/users`, {
-                tinodeUID: client.getCurrentUserID(),
-                displayName: this.form.fullName,
-                username: this.form.username,
-                email: this.form.email,
-                avatarData: this.form.avatarData
-              })
-              .then(response => {
-                if (response.status == 200) {
-                  // account was created successfully, change views
-                  this.$router.push({ name: "login" });
-                }
-              })
-              .catch(e => {
-                console.log("error on POST: ", e);
-                this.form.errors.push(e);
-              });
-          });
-      });
-    } else {
-      console.log("errors detected");
-    }
-  }
-}
+import store from "@/store/store.js";
 
 export default {
   name: "Signup",
   data() {
     return {
-      form: new Form()
+      form: {
+        avatarData:
+          "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" // avatar placeholder
+      }
     };
   },
   methods: {

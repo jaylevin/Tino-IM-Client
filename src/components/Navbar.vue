@@ -27,8 +27,8 @@
         </a>
       </div>
       <div v-if="isAuthenticated">
-        <p style="color:white; padding-top:5px;"> Logged in as: <span style="color:#00a1ff">{{ displayName }}</span></p>
-        <p style="color:white;"> Tinode ID: <span style="color:#00a1ff">{{ $tinodeClient._myUID }}</span></p>
+        <p style="color:white; padding-top:5px;"> Logged in as: <span style="color:#00a1ff"></span></p>
+        <p style="color:white;"> Tinode ID: <span style="color:#00a1ff"></span></p>
       </div>
 
       <!-- Signup and Login controls -->
@@ -51,33 +51,20 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import store from "@/store.js";
+import store from "@/store/store.js";
 
 export default {
   name: "Navbar",
-  props: ["tinodeClient"],
 
   data() {
     return {
       navBurgerActivated: false,
-      tab: "home"
+      tab: "home",
+      isAuthenticated: false // placeholder, needs to be computed from tinodeClient.isAuthenticated
     };
   },
-  computed: {
-    displayName() {
-      return store.getters.getProfile.displayName;
-    },
-    ...mapGetters({
-      // map `this.isAuthenticated` to `this.$store.getters.isAuthenticated`
-      isAuthenticated: "isAuthenticated"
-    })
-  },
-  methods: {
-    logout() {
-      store.dispatch("logout");
-    }
-  }
+  computed: {},
+  methods: {}
 };
 </script>
 

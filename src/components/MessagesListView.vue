@@ -44,7 +44,7 @@
 
 <script>
 import Message from "@/components/Message.vue";
-import store from "@/store.js";
+import store from "@/store/store.js";
 
 export default {
   name: "MessagesListView",
@@ -57,70 +57,19 @@ export default {
     };
   },
   mounted() {
+    // scrolling ability
     var msgs = this.$el.querySelector("#messages");
     msgs.scrollTop = msgs.scrollHeight;
   },
   updated() {
+    // scrolling ability
     var msgs = this.$el.querySelector("#messages");
     if (msgs.scrollTop != msgs.scrollHeight) {
       msgs.scrollTop = msgs.scrollHeight;
     }
   },
-  computed: {
-    messages() {
-      return store.getters.getMessages;
-    },
-    isDeleting() {
-      return store.getters.isDeleting;
-    },
-    delRange() {
-      return store.getters.delRange;
-    }
-  },
-  methods: {
-    sendMessage(messageInput) {
-      store.dispatch("handleSendMessage", messageInput);
-      this.messageInput = "";
-    },
-    deleteMsgs() {
-      let msgIDsToDel = store.getters.getMsgIDsToDelete;
-      msgIDsToDel.sort(function(a, b) {
-        return a - b;
-      });
-
-      let ranges = [];
-      var temp = [];
-
-      for (var i = 0; i < msgIDsToDel.length; ++i) {
-        if (i == 0) {
-          temp.push(msgIDsToDel[i]); // add the first element and continue
-          continue;
-        }
-        if (msgIDsToDel[i - 1] != msgIDsToDel[i] - 1) {
-          // if the current is not sequential
-          // add the current temporary array to arrays result
-          ranges.push(temp);
-
-          // clear the temporary array and start over
-          temp = [];
-        }
-        temp.push(msgIDsToDel[i]);
-      }
-      ranges.push(temp);
-
-      let delRanges = [];
-      ranges.forEach(range => {
-        delRanges.push({
-          low: range[0],
-          high: ++range[range.length - 1] // inclusive-exclusive, eg: [low, high)
-        });
-      });
-      store.dispatch("deleteMsgs", delRanges);
-    },
-    cancelDelMsgs() {
-      store.dispatch("setIsDeleting", false);
-    }
-  }
+  computed: {},
+  methods: {}
 };
 </script>
 

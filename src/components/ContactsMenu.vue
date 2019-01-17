@@ -38,36 +38,12 @@
 </template>
 
 <script>
-import store from "@/store.js";
+import store from "@/store/store.js";
 
 export default {
   name: "ContactsMenu",
-  computed: {
-    selectedTopic() {
-      return store.getters.getSelectedTopic;
-    },
-    contacts() {
-      return store.getters.getContacts;
-    }
-  },
-  methods: {
-    addContact: function() {
-      var person = prompt(
-        "Enter the name of the userID of the friend you would like to request",
-        ""
-      );
-
-      if (person != null) {
-        this.$tinodeClient.subscribe(person);
-      }
-    },
-    selectTopic: function(contact) {
-      if (contact.topic != store.getters.getSelectedTopic.topic) {
-        store.dispatch("selectTopic", contact);
-        console.log("Selected contact:", store.getters.getSelectedTopic);
-      }
-    }
-  }
+  computed: {},
+  methods: {}
 };
 </script>
 

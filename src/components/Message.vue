@@ -33,27 +33,13 @@
 
 
 <script>
-import store from "@/store.js";
-class Msg {
-  constructor(from, content, seq, ts) {
-    this.from = from;
-    this.content = content;
-    this.seq = seq;
-    this.ts = ts;
-    this.markedToDel = false;
-  }
-  markToDel() {
-    store.dispatch("selectMsgForDel", this);
-  }
-}
-
+import store from "@/store/store.js";
 export default {
   props: ["from", "ts", "content", "seq"],
   data() {
     return {
       interval: false,
-      count: 0,
-      msg: new Msg(this.from, this.content, this.seq, this.ts)
+      count: 0
     };
   },
   methods: {
@@ -63,7 +49,6 @@ export default {
           if (this.count != 25) {
             this.count++;
           } else {
-            store.dispatch("setIsDeleting", true);
             this.stop();
           }
         }, 30);
@@ -75,25 +60,7 @@ export default {
       this.count = 0;
     }
   },
-  computed: {
-    avatarURI() {
-      return this.isIncoming
-        ? store.getters.getTopic(this.from).public.Photo.Data
-        : store.getters.getProfile.avatar.Data;
-    },
-    // Styles incoming messages differently. See the above :class binding.
-    isIncoming() {
-      return this.from != store.getters.getProfile.tinodeID;
-    },
-    isDeleting() {
-      return store.getters.isDeleting;
-    },
-    fromFN() {
-      return this.from == store.getters.getProfile.tinodeID
-        ? "You"
-        : store.getters.getTopic(this.from).public.FN;
-    }
-  }
+  computed: {}
 };
 </script>
 

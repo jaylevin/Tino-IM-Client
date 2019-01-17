@@ -45,14 +45,14 @@
 </template>
 
 <script>
-import store from "@/store.js";
+import store from "@/store/store.js";
 export default {
   name: "Profile",
   data() {
     return {
-      username: store.getters.getProfile.username,
-      displayName: store.getters.getProfile.displayName,
-      avatarURI: store.getters.getProfile.avatar.Data,
+      username: "",
+      displayName: "",
+      avatarURI: "",
       email: ""
     };
   },
@@ -74,41 +74,9 @@ export default {
     },
     removeImage: function(e) {
       this.form.avatarURI = "";
-    },
-    handleUpdateAccount() {
-      var currProfile = store.getters.getProfile;
-      var newDisplayName = currProfile.displayName;
-      var newAvatar = currProfile.avatar;
-      var updated = false;
-
-      if (currProfile.displayName != this.displayName) {
-        newDisplayName = this.displayName;
-        updated = true;
-      }
-      console.log("currProfile.avatar:", currProfile.avatar);
-      if (currProfile.avatar != this.avatarURI) {
-        newAvatar = this.avatarURI;
-        updated = true;
-      }
-
-      var pub = {
-        FN: newDisplayName,
-        Photo: {
-          Data: newAvatar,
-          Type: "png"
-        }
-      };
-
-      if (updated) {
-        store.dispatch("handleUpdateProfile", pub);
-      }
     }
   },
-  computed: {
-    profile() {
-      return store.getters.getProfile;
-    }
-  }
+  computed: {}
 };
 </script>
 

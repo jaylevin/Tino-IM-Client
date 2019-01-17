@@ -32,12 +32,11 @@
 </template>
 
 <script>
-import store from "@/store.js";
+import store from "@/store/store.js";
 import Profile from "@/components/Profile.vue";
 export default {
   name: "Dashboard",
   components: { Profile },
-  props: {},
   data() {
     return {
       tab: "profile",
@@ -54,9 +53,8 @@ export default {
 .menu {
   padding-right: 5px;
   border-right: 1px solid grey;
-
 }
-p{
+p {
   color: white;
   font-weight: bold;
 }
@@ -67,7 +65,6 @@ li a {
 .chat {
   text-align: left;
   margin: 10px;
-
 }
 .avatar {
   margin-left: 15px;
@@ -82,6 +79,4 @@ li a {
   font-size: 22px;
   text-align: left;
 }
-
-
 </style>

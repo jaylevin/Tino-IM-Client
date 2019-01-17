@@ -47,31 +47,15 @@
 
 <script>
 import axios from "axios";
-import store from "@/store.js";
+import store from "@/store/store.js";
 import router from "@/router.js";
-
-class Form {
-  constructor() {
-    this.username = "";
-    this.password = "";
-    this.err = "";
-  }
-  setError(err) {
-    if (err.includes("authentication failed")) {
-      this.err = "Username and password do not match. Please try again.";
-    } else if (err.includes("already authenticated")) {
-      this.err = "You're already authenticated, silly goose!";
-    }
-  }
-}
 
 export default {
   name: "Login",
-  props: ["tinodeClient"],
 
   data() {
     return {
-      form: new Form()
+      form: {}
     };
   },
 
@@ -93,71 +77,6 @@ export default {
     },
     removeImage: function(e) {
       this.form.avatarData = "";
-    },
-    handleLogin() {
-      if (this.form.err != "") {
-        this.form.err = "";
-      }
-      let comp = this;
-      let tinode = this.$tinodeClient
-        .connect()
-        .then(() => {
-          return this.$tinodeClient.loginBasic(
-            this.form.username,
-            this.form.password
-          );
-        })
-        .then(ctrl => {
-          var me = this.$tinodeClient.getMeTopic();
-          var comp = this;
-
-          this.$tinodeClient.onDataMessage = function(data) {
-            console.log("data:", data);
-            // if (store.getters.getSelectedTopic.name == data.topic) {
-            //   store.dispatch("handleNewMessage", data);
-            // } else {
-            //   // update unread count
-            // }
-          };
-
-          me.onMeta = function(meta) {
-            if (meta.sub && store.getters.isLoadingContacts) {
-              // Only called once on successful authentication
-              let messagesCache = new Map();
-              meta.sub.forEach(sub => {
-                let messages = new Array();
-                var contact = comp.$tinodeClient.getTopic(sub.topic);
-
-                var subRequest = contact.subscribe().then(() => {
-                  store.dispatch("handleNewContact", contact);
-
-                  contact.getMessagesPage(20, true).then(() => {
-                    contact.messages(msg => {
-                      messages.push(msg);
-                    });
-                    messagesCache.set(contact.topic, messages);
-                  });
-                });
-              });
-              store.dispatch("setCachedMessages", messagesCache);
-            } else if (meta.desc) {
-              console.log("meta desc:", meta.desc);
-              // Load profile information
-              store.dispatch("setProfile", {
-                tinodeID: comp.$tinodeClient.getCurrentUserID(),
-                username: comp.$tinodeClient.getCurrentLogin(),
-                displayName: meta.desc.public.FN,
-                avatar: meta.desc.public.Photo
-              });
-              router.push({ name: "chat" });
-            }
-          };
-
-          me.subscribe({ what: "sub desc" });
-        })
-        .catch(err => {
-          comp.form.setError(err.message);
-        });
     }
   }
 };
