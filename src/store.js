@@ -25,7 +25,7 @@ const appStore = {
     currentMessages: new Array(),
     // Message deleting
     isDeleting: false,
-    msgsToDelete: new Array()
+    msgIDsToDelete: new Array()
   },
 
   mutations: {
@@ -37,16 +37,41 @@ const appStore = {
     },
     selectMsgForDel: (state, msg) => {
       if (msg.markedToDel) {
+        console.log("unmarking msg for del");
         msg.markedToDel = false;
-        var msgs = state.msgsToDelete;
-        msgs = msgs.filter(function(val, index, arr) {
-          return val != msg;
+        var msgs = state.msgIDsToDelete;
+        state.msgIDsToDelete = msgs.filter(function(val, index, arr) {
+          return val != msg.seq;
         });
-        state.msgsToDelete = filtered;
       } else {
+        console.log("marking msg for del");
         msg.markedToDel = true;
-        state.msgsToDelete.push(msg);
+        state.msgIDsToDelete.push(msg.seq);
       }
+    },
+    deleteMsgs: (state, delRanges) => {
+      state.tinodeClient
+        .getTopic(state.selectedTopic.topic)
+        .delMessages(delRanges, false);
+
+      delRanges.forEach(range => {
+        let i = range.low;
+
+        while (i < range.high) {
+          console.log("Filtering msg id:", i);
+          // for each message being deleted, filter it from the currentMessages state
+          state.currentMessages = state.currentMessages.filter(function(
+            msg,
+            index,
+            arr
+          ) {
+            return msg.seq != i;
+          });
+          i++;
+        }
+
+        console.log("new messages:", state.currentMessages);
+      });
     },
 
     setLoadingContacts: (state, loading) => {
@@ -87,10 +112,8 @@ const appStore = {
         state.messagesCache.set(msg.topic, state.currentMessages);
       });
     },
-    renderCachedMessages: (state, messagesCache) => {
+    setCachedMessages: (state, messagesCache) => {
       // This mutation is invoked once per topic when a client first logs in,
-      // Description: Fetches the 20 most recent messages from server,
-      // into state.messagesCache
       state.messagesCache = messagesCache;
     },
     renderMessages: state => {
@@ -118,6 +141,9 @@ const appStore = {
     selectMsgForDel: (context, msg) => {
       context.commit("selectMsgForDel", msg);
     },
+    deleteMsgs: (context, delRanges) => {
+      context.commit("deleteMsgs", delRanges);
+    },
     setLoadingContacts: (context, loading) => {
       context.commit("setLoadingContacts", loading);
     },
@@ -130,8 +156,8 @@ const appStore = {
     handleNewMessage: (context, message) => {
       context.commit("handleNewMessage", message);
     },
-    renderCachedMessages: (context, messagesCache) => {
-      context.commit("renderCachedMessages", messagesCache);
+    setCachedMessages: (context, messagesCache) => {
+      context.commit("setCachedMessages", messagesCache);
       context.commit("setLoadingContacts", false);
     },
     handleSendMessage: (context, messageInput) => {
@@ -180,8 +206,8 @@ const appStore = {
     isDeleting: state => {
       return state.isDeleting;
     },
-    getMsgsToDelete: state => {
-      return state.msgsToDelete;
+    getMsgIDsToDelete: state => {
+      return state.msgIDsToDelete;
     }
   }
 };

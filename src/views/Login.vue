@@ -16,8 +16,6 @@
         <!-- <p class="help is-success">This username is available</p> -->
       </div>
 
-
-
       <div class="field">
         <label class="label">Password</label>
         <div class="control has-icons-left has-icons-right">
@@ -124,25 +122,24 @@ export default {
 
           me.onMeta = function(meta) {
             if (meta.sub && store.getters.isLoadingContacts) {
-              // Loop through each contact in the client's contact list
+              // Only called once on successful authentication
               let messagesCache = new Map();
               meta.sub.forEach(sub => {
                 let messages = new Array();
                 var contact = comp.$tinodeClient.getTopic(sub.topic);
+
                 var subRequest = contact.subscribe().then(() => {
                   store.dispatch("handleNewContact", contact);
 
                   contact.getMessagesPage(20, true).then(() => {
                     contact.messages(msg => {
                       messages.push(msg);
-                      console.log("pushing msg:", msg);
                     });
                     messagesCache.set(contact.topic, messages);
                   });
                 });
               });
-              store.dispatch("renderCachedMessages", messagesCache);
-              console.log("Successfully loaded contacts list.");
+              store.dispatch("setCachedMessages", messagesCache);
             } else if (meta.desc) {
               console.log("meta desc:", meta.desc);
               // Load profile information
@@ -155,6 +152,7 @@ export default {
               router.push({ name: "chat" });
             }
           };
+
           me.subscribe({ what: "sub desc" });
         })
         .catch(err => {

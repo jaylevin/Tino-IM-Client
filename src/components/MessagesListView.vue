@@ -7,7 +7,8 @@
                      :from="message.from"
                      :ts="message.ts"
                      :content="message.content"
-                     :seq="message.seq">
+                     :seq="message.seq"
+                     :markedToDel="false">
             </message>
         </ul>
         <a v-if="isDeleting" @click="cancelDelMsgs()" class="button is-danger delete-btn">
@@ -82,32 +83,39 @@ export default {
       this.messageInput = "";
     },
     deleteMsgs() {
-      let msgs = store.getters.getMsgsToDelete;
-      msgs.sort(function(a, b) {
-        return a.seq - b.seq;
+      let msgIDsToDel = store.getters.getMsgIDsToDelete;
+      msgIDsToDel.sort(function(a, b) {
+        return a - b;
       });
-      console.log("sorted", msgs);
-      let delRanges = [];
 
+      let ranges = [];
       var temp = [];
 
-      for (var i = 0; i < msgs.length; ++i) {
+      for (var i = 0; i < msgIDsToDel.length; ++i) {
         if (i == 0) {
-          temp.push(msgs[i].seq); // add the first element and continue
+          temp.push(msgIDsToDel[i]); // add the first element and continue
           continue;
         }
-        if (msgs[i - 1].seq != msgs[i].seq - 1) {
+        if (msgIDsToDel[i - 1] != msgIDsToDel[i] - 1) {
           // if the current is not sequential
           // add the current temporary array to arrays result
-          delRanges.push(temp);
+          ranges.push(temp);
 
           // clear the temporary array and start over
           temp = [];
         }
-        temp.push(msgs[i].seq);
+        temp.push(msgIDsToDel[i]);
       }
-      delRanges.push(temp);
-      console.log("delRanges:", delRanges);
+      ranges.push(temp);
+
+      let delRanges = [];
+      ranges.forEach(range => {
+        delRanges.push({
+          low: range[0],
+          high: ++range[range.length - 1] // inclusive-exclusive, eg: [low, high)
+        });
+      });
+      store.dispatch("deleteMsgs", delRanges);
     },
     cancelDelMsgs() {
       store.dispatch("setIsDeleting", false);
