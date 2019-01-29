@@ -7,7 +7,7 @@
       </div>
     </div>
     <div class="form">
-      <form @submit.prevent="form.handleSubmit">
+      <form @submit.prevent="register">
         <div class="field">
           <label class="label">Display Name</label>
           <div class="control has-icons-left has-icons-right">
@@ -118,12 +118,26 @@ export default {
   data() {
     return {
       form: {
+        displayName: "",
+        username: "",
+        email: "",
+        password: "",
+        passwordconfirm: "",
         avatarData:
           "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" // avatar placeholder
       }
     };
   },
   methods: {
+    register() {
+      store.dispatch("register", {
+        username: this.form.username,
+        password: this.form.password,
+        displayName: this.form.displayName,
+        email: this.form.email,
+        avatarData: this.form.avatarData
+      });
+    },
     onAvatarChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;

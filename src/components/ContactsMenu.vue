@@ -7,27 +7,56 @@
         </p>
       </div>
       <div class="column">
-        <a @click="addContact" class="button is-dark add-contact">
-          +
-        </a>
+        <a @click="toggleAddContactForm" :class="{'is-active': addContactForm.isVisible}" class="button is-success add-contact">+</a>
+      </div>
+    </div>
+    <div class="column" v-if="addContactForm.isVisible">
+      <div class="form-popup" id="addContactForm">
+        <form submit.prevent="searchForContact" class="form-container">
+
+          <label for="email"><b>Enter a name or email:</b></label>
+          <input class="input" type="text" v-model="addContactForm.searchQuery" name="searchQuery" required>
+
+          <!-- Search Results -->
+          <ul class="search-results" v-if="addContactForm.searchResults.length > 0">
+            <h1>Results:</h1>
+            <li v-for="result in addContactForm.searchResults">
+              <a class="search-result" @click="addContact(result.user)">
+                <div>
+                  <figure class="image is-32x32">
+                    <img class="is-rounded" :src="result.public.photo.data">
+                  </figure>
+                </div>
+                <div>
+                  <a>{{result.public.fn}}</a>
+                </div>
+              </a>
+            </li>
+          </ul>
+          <!-- End of Search Results -->
+
+          <button type="submit" class="button is-success submit">Submit</button>
+          <button type="submit" @click="toggleAddContactForm" class="button is-danger">Cancel</button>
+        </form>
       </div>
     </div>
 
     <div class="divider"></div>
 
-    <ul class="menu-list">
-      <li v-for="contact in contacts" @click="selectTopic(contact)">
-        <a :class="{'is-active': selectedTopic == contact}">
+    <ul v-for="contact in contacts" v-if="contacts.length > 0" class="menu-list">
+      <li>
+        <a>
           <div class="columns is-gapless is-vcentered">
               <div class="column is-one-fifth is-v">
-                <figure class="image is-32x32"><img class="is-rounded" :src="contact.public.Photo.Data"></figure>
+                <figure class="image is-32x32"><img class="is-rounded" :src="contact.public.photo.data"></figure>
               </div>
               <div class="column">
-                  <p class="contact-name" :class="{'is-active': selectedTopic == contact}">
-                    {{ contact.public.FN }}
+                  <p class="contact-name">
+                    name
                   </p>
 
                   <p class="lastMessage">
+                    last message
                   </p>
               </div>
           </div>
@@ -42,8 +71,28 @@ import store from "@/store/store.js";
 
 export default {
   name: "ContactsMenu",
-  computed: {},
-  methods: {}
+  computed: {
+    addContactForm() {
+      return store.getters.addContactForm;
+    },
+    contacts() {
+      return store.getters.contacts;
+    }
+  },
+  methods: {
+    toggleAddContactForm() {
+      store.dispatch("toggleAddContactForm", !this.addContactForm.isVisible);
+    },
+    addContact(topicID) {
+      store.dispatch("addContact", topicID);
+    },
+    searchForContact() {
+      store.dispatch(
+        "searchForTopic",
+        "basic:" + this.addContactForm.searchQuery
+      );
+    }
+  }
 };
 </script>
 
@@ -108,5 +157,33 @@ div.divider {
   background: rgba(54, 54, 54, 0.5);
   padding: 15px;
   text-align: left;
+}
+
+/* Popup add-contact form */
+.form-popup {
+  // border: 3px solid #f1f1f1;
+  label {
+    color: white;
+  }
+  button {
+    margin: 3px;
+  }
+}
+.form-container input[type="text"]:focus {
+  background-color: #fff;
+  outline: none;
+}
+
+.search-result {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.search-results {
+  h1 {
+    color: white;
+  }
+  margin-top: 8px;
 }
 </style>

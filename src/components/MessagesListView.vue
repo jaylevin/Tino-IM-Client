@@ -11,10 +11,10 @@
                      :markedToDel="false">
             </message>
         </ul>
-        <a v-if="isDeleting" @click="cancelDelMsgs()" class="button is-danger delete-btn">
+        <a class="button is-danger delete-btn">
           Cancel
         </a>
-        <a v-if="isDeleting" @click="deleteMsgs()" class="button is-danger delete-btn">
+        <a class="button is-danger delete-btn">
           Delete Selected
         </a>
       </div>
@@ -53,7 +53,8 @@ export default {
   },
   data() {
     return {
-      messageInput: ""
+      messageInput: "",
+      messages: []
     };
   },
   mounted() {
@@ -72,7 +73,6 @@ export default {
   methods: {}
 };
 </script>
-
 
 <style scoped lang="scss">
 textarea {

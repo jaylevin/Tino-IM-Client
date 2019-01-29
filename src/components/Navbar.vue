@@ -1,10 +1,10 @@
 <template>
-  <nav @mouseleave="navBurgerActivated = false" class="navbar is-dark" role="navigation" aria-label="main navigation">
+  <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="logo">
         <router-link class="navbar-item" :to="{ name: 'landing' }" @click="tab='home'">Tino IM</router-link>
       </a>
-      <a role="button" @mouseover="navBurgerActivated = !navBurgerActivated"  :class="{'is-active': navBurgerActivated}" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <a role="button" @click="navBurgerActivated = !navBurgerActivated"  :class="{'is-active': navBurgerActivated}" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
         <span aria-hidden="true"></span>
@@ -25,21 +25,36 @@
         <a class="navbar-item" v-if="isAuthenticated" @click="tab = 'dashboard'">
           <router-link :to="{ name: 'dashboard' }">My Dashboard</router-link>
         </a>
+
       </div>
-      <div v-if="isAuthenticated">
-        <p style="color:white; padding-top:5px;"> Logged in as: <span style="color:#00a1ff"></span></p>
-        <p style="color:white;"> Tinode ID: <span style="color:#00a1ff"></span></p>
-      </div>
+
 
       <!-- Signup and Login controls -->
       <div class="navbar-end">
+        <div class="navbar-item">
+          <div class="userInfo" v-if="isAuthenticated">
+
+            <div class="avatar image is-32x32">
+              <img class="is-rounded" :src="avatar.data">
+            </div>
+
+            <div class="displayName">
+              <span style="color:#00a1ff"> {{ displayName }}</span>
+            </div>
+
+            <div class="userID">
+              [<span style="color:#00a1ff">{{ userID }}</span>]
+            </div>
+
+          </div>
+        </div>
         <div class="navbar-item">
           <div class="buttons">
             <a v-if="!isAuthenticated" class="button">
               <router-link :to="{ name: 'signup' }">Signup</router-link>
             </a>
 
-            <a v-if="isAuthenticated" @click="logout" class="button">Logout</a>
+            <a v-if="isAuthenticated" class="button">Logout</a>
             <a v-else class="button">
               <router-link :to="{ name: 'login' }">Login</router-link>
             </a>
@@ -60,10 +75,23 @@ export default {
     return {
       navBurgerActivated: false,
       tab: "home",
-      isAuthenticated: false // placeholder, needs to be computed from tinodeClient.isAuthenticated
+      tinodeClient: store.state.client.tinodeClient
     };
   },
-  computed: {},
+  computed: {
+    isAuthenticated() {
+      return store.state.client.tinodeClient.isAuthenticated();
+    },
+    displayName() {
+      return this.tinodeClient.getCurrentLogin();
+    },
+    userID() {
+      return this.tinodeClient.getCurrentUserID();
+    },
+    avatar() {
+      return store.getters.avatar;
+    }
+  },
   methods: {}
 };
 </script>
@@ -99,6 +127,11 @@ export default {
     color: $accent;
     border: none;
   }
+}
+.userInfo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .navbar-menu {

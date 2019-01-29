@@ -10,7 +10,7 @@ class Msg {
   markMessageForDel() {}
 }
 
-export const messagesStore = {
+export default {
   state: {
     messagesCache: new Map()
   },

@@ -55,11 +55,25 @@ export default {
 
   data() {
     return {
-      form: {}
+      form: {
+        username: "",
+        password: ""
+      }
     };
   },
 
   methods: {
+    handleLogin() {
+      console.log(
+        "Sending login request:",
+        this.form.username,
+        this.form.password
+      );
+      store.dispatch("authenticate", {
+        username: this.form.username,
+        password: this.form.password
+      });
+    },
     onAvatarChange(e) {
       var files = e.target.files || e.dataTransfer.files;
       if (!files.length) return;
