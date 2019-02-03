@@ -12,14 +12,15 @@
     </div>
     <div class="column" v-if="addContactForm.isVisible">
       <div class="form-popup" id="addContactForm">
-        <form submit.prevent="searchForContact" class="form-container">
+        <form submit.prevent="" class="form-container">
 
           <label for="email"><b>Enter a name or email:</b></label>
-          <input class="input" type="text" v-model="addContactForm.searchQuery" name="searchQuery" required>
+          <input class="input" type="text" v-model="addContactForm.searchQuery" required>
 
           <!-- Search Results -->
           <ul class="search-results" v-if="addContactForm.searchResults.length > 0">
-            <h1>Results:</h1>
+            <h1>Search Results</h1>
+            <div class="divider"></div>
             <li v-for="result in addContactForm.searchResults">
               <a class="search-result" @click="addContact(result.user)">
                 <div>
@@ -35,8 +36,8 @@
           </ul>
           <!-- End of Search Results -->
 
-          <button type="submit" class="button is-success submit">Submit</button>
-          <button type="submit" @click="toggleAddContactForm" class="button is-danger">Cancel</button>
+          <button @click="searchForContact" class="button is-success submit">Submit</button>
+          <button @click="toggleAddContactForm" class="button is-danger">Cancel</button>
         </form>
       </div>
     </div>
@@ -87,10 +88,13 @@ export default {
       store.dispatch("addContact", topicID);
     },
     searchForContact() {
-      store.dispatch(
-        "searchForTopic",
-        "basic:" + this.addContactForm.searchQuery
-      );
+      if (this.addContactForm.searchQuery.length) {
+        console.log("Searching for contact:", this.addContactForm.searchQuery);
+        store.dispatch(
+          "searchForTopic",
+          "basic:" + this.addContactForm.searchQuery
+        );
+      }
     }
   }
 };
@@ -182,7 +186,7 @@ div.divider {
 
 .search-results {
   h1 {
-    color: white;
+    color: $accent;
   }
   margin-top: 8px;
 }

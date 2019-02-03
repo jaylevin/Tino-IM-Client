@@ -1,6 +1,6 @@
 module.exports = {
   rules: {
-    "no-console": "on"
+    "no-console": "off"
   },
   parser: "babel-eslint",
   parserOptions: {

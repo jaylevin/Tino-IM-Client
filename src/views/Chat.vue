@@ -28,16 +28,15 @@ export default {
   mounted() {
     var tinodeClient = store.state.client.tinodeClient;
     if (!tinodeClient.isAuthenticated()) {
-      var token = store.getters.session.getItem("token");
-      if (token) {
-        console.log("Found token:", token);
-
-        tinodeClient.connect().then(() => {
-          tinodeClient.loginToken(token);
-        });
-      } else {
-        router.push({ name: "landing" });
-      }
+      // var token = store.getters.session.getItem("token");
+      // if (token) {
+      //   console.log("Found token:", token);
+      //
+      //   tinodeClient.connect().then(() => {
+      //     tinodeClient.loginToken(token);
+      //   });
+      // } else {
+      router.push({ name: "landing" });
     }
   },
   updated() {

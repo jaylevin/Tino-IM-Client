@@ -69,10 +69,17 @@ export default {
         this.form.username,
         this.form.password
       );
-      store.dispatch("authenticate", {
-        username: this.form.username,
-        password: this.form.password
-      });
+      store
+        .dispatch("authenticate", {
+          username: this.form.username,
+          password: this.form.password
+        })
+        .then(data => {
+          console.log("Data:", data);
+        })
+        .catch(err => {
+          console.log("ERRR:", error);
+        });
     },
     onAvatarChange(e) {
       var files = e.target.files || e.dataTransfer.files;

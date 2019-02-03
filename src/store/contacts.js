@@ -1,4 +1,5 @@
 import store from "@/store/store.js";
+import axios from "axios";
 export default {
   state: {
     contacts: [],
@@ -29,10 +30,22 @@ export default {
       });
     },
     addContact(state, topicID) {
-      store.state.client.tinodeClient.subscribe(topicID).then(ctrl => {
-        console.log("subscribing to:", topicID);
-        console.log("ctrl:", ctrl);
-      });
+      store.state.client.tinodeClient
+        .getTopic(topicID)
+        .subscribe()
+        .then(ctrl => {
+          if (ctrl.code == 200) {
+            var requesterID = store.state.client.tinodeClient.getCurrentUserID();
+            axios
+              .post("http://localhost:8000/friend_requests", {
+                requester_id: requesterID,
+                receiver_id: topicID
+              })
+              .then(resp => {
+                console.log(resp);
+              });
+          }
+        });
     },
     setSearchResults(state, results) {
       console.log("Setting results:", results);
@@ -40,7 +53,9 @@ export default {
     },
     toggleAddContactForm(state, status) {
       if (!status) {
+        // clear form and reset the results list
         state.addContactForm.searchResults = [];
+        state.addContactForm.searchQuery = "";
       }
       state.addContactForm.isVisible = status;
     }

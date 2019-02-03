@@ -7,15 +7,18 @@ Vue.prototype.$tinodeClient = tClient;
 const cookieCache = window.localStorage;
 var tClient = tinode.NewClient();
 
-if (cookieCache.getItem("token")) {
-  console.log("found token:", cookieCache.getItem("token"));
-}
+// if (cookieCache.getItem("token")) {
+//   console.log("found token:", cookieCache.getItem("token"));
+// }
 
 export default {
   state: {
     tinodeClient: tClient,
-    avatar: {},
-    session: cookieCache
+    profile: {
+      displayName: "", // user.public.fn
+      avatar: {} // user.public.photo.data
+    }
+    // session: cookieCache
   },
 
   mutations: {
@@ -30,16 +33,32 @@ export default {
           );
         })
         .then(ctrl => {
-          console.log("Logged in successfully, ", ctrl.params);
-          state.session.setItem("token", ctrl.params.token);
+          console.log("Logged in successfully:", ctrl.params);
+          // state.session.setItem("token", ctrl.params.token);
 
           // Logged in fine, attach callbacks, subscribe to 'me'.
           var me = state.tinodeClient.getMeTopic();
           var fnd = state.tinodeClient.getFndTopic();
+          me.onMeta = function(meta) {
+            console.log("Received me.onMeta:", meta);
+          };
           me.onMetaDesc = function(meta) {
-            console.log("me.onMetaDesc triggered:", meta);
-            store.dispatch("setAvatar", meta.public.photo);
+            console.log("Received topic metadata update: ", meta);
+            if (meta.public) {
+              store.dispatch("setProfile", {
+                displayName: meta.public.fn,
+                avatar: meta.public.photo
+              });
+            }
             router.push("chat");
+          };
+
+          me.onPres = function(pres) {
+            console.log("Presence msg:", pres);
+            if (state.tinodeClient.getTopic(pres.src).isSubscribed()) {
+            } else {
+              // Client has a friend request
+            }
           };
 
           fnd.onMeta = function(meta) {
@@ -61,6 +80,9 @@ export default {
           console.log(err);
         });
     },
+    logout(state) {
+      state.tinodeClient.disconnect();
+    },
 
     // Register a new account
     register(state, payload) {
@@ -78,11 +100,14 @@ export default {
           })
           .then(data => {
             console.log("Account registration successful:", data);
+          })
+          .catch(err => {
+            console.log(err);
           });
       });
     },
-    setAvatar(state, avatar) {
-      state.avatar = avatar;
+    setProfile(state, profile) {
+      state.profile = profile;
     }
   }, // END of mutations
 
@@ -90,11 +115,14 @@ export default {
     authenticate(context, request) {
       context.commit("authenticate", request);
     },
+    logout(context) {
+      context.commit("logout");
+    },
     register(context, payload) {
       context.commit("register", payload);
     },
-    setAvatar(context, avatar) {
-      context.commit("setAvatar", avatar);
+    setProfile(context, profile) {
+      context.commit("setProfile", profile);
     }
   }, // END of actions
 
@@ -102,8 +130,8 @@ export default {
     session(state) {
       return state.session;
     },
-    avatar(state) {
-      return state.avatar;
+    profile(state) {
+      return state.profile;
     }
   }
 };

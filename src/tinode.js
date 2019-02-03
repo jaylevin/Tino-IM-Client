@@ -11,7 +11,6 @@ export function NewClient() {
 
   client.enableLogging(true);
   client.onDisconnect = function() {
-    console.log("Client has disconnected!");
     router.push({ name: "landing" });
   };
 

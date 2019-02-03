@@ -39,7 +39,7 @@
             </div>
 
             <div class="displayName">
-              <span style="color:#00a1ff"> {{ displayName }}</span>
+              <span style="color:#00a1ff">{{ displayName }}</span>
             </div>
 
             <div class="userID">
@@ -54,7 +54,7 @@
               <router-link :to="{ name: 'signup' }">Signup</router-link>
             </a>
 
-            <a v-if="isAuthenticated" class="button">Logout</a>
+            <a @click="logout" v-if="isAuthenticated" class="button">Logout</a>
             <a v-else class="button">
               <router-link :to="{ name: 'login' }">Login</router-link>
             </a>
@@ -74,25 +74,28 @@ export default {
   data() {
     return {
       navBurgerActivated: false,
-      tab: "home",
-      tinodeClient: store.state.client.tinodeClient
+      tab: "home"
     };
   },
   computed: {
     isAuthenticated() {
       return store.state.client.tinodeClient.isAuthenticated();
     },
-    displayName() {
-      return this.tinodeClient.getCurrentLogin();
-    },
     userID() {
-      return this.tinodeClient.getCurrentUserID();
+      return store.state.client.tinodeClient.getCurrentUserID();
+    },
+    displayName() {
+      return store.getters.profile.displayName;
     },
     avatar() {
-      return store.getters.avatar;
+      return store.getters.profile.avatar;
     }
   },
-  methods: {}
+  methods: {
+    logout() {
+      store.dispatch("logout");
+    }
+  }
 };
 </script>
 
