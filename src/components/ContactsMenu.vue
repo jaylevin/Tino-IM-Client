@@ -22,7 +22,7 @@
             <h1>Search Results</h1>
             <div class="divider"></div>
             <li v-for="result in addContactForm.searchResults">
-              <a class="search-result" @click="addContact(result.user)">
+              <a class="search-result" @click="addContact(result)">
                 <div>
                   <figure class="image is-32x32">
                     <img class="is-rounded" :src="result.public.photo.data">
@@ -87,8 +87,8 @@ export default {
     toggleAddContactForm() {
       store.dispatch("toggleAddContactForm", !this.addContactForm.isVisible);
     },
-    addContact(topicID) {
-      store.dispatch("addContact", topicID);
+    addContact(topic) {
+      store.dispatch("addContact", topic);
     },
     searchForContact() {
       if (this.addContactForm.searchQuery.length) {

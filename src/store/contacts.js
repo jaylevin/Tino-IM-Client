@@ -29,26 +29,26 @@ export default {
           });
       });
     },
-    addContact(state, topicID) {
-      store.state.client.tinodeClient
-        .getTopic(topicID)
-        .subscribe()
-        .then(ctrl => {
-          if (ctrl.code == 200) {
-            var requesterID = store.state.client.tinodeClient.getCurrentUserID();
-            axios
-              .post("http://localhost:8000/friend_requests", {
-                requester_id: requesterID,
-                receiver_id: topicID
-              })
-              .then(resp => {
-                console.log(resp);
-              });
-          }
-        });
+    addContact(state, topic) {
+      console.log("adding topic:", topic);
+      state.contacts.push(topic);
+      topic = store.getters.getTopic(topic.user);
+
+      topic.subscribe().then(() => {
+        var requesterID = store.state.client.tinodeClient.getCurrentUserID();
+        axios
+          .post("http://localhost:8000/friend_requests", {
+            requester_id: requesterID,
+            receiver_id: topic.user
+          })
+          .then(resp => {
+            console.log(resp);
+          });
+      });
     },
     setSearchResults(state, results) {
       console.log("Setting results:", results);
+      state.addContactForm.searchResults = results;
       state.addContactForm.searchResults = results;
     },
     toggleAddContactForm(state, status) {
@@ -63,6 +63,12 @@ export default {
       state.contacts = contacts;
     },
     updateTopicPresence(state, payload) {
+      console.log(
+        "Updating topic presence:",
+        payload.topicID,
+        payload.presence
+      );
+
       let contact = state.contacts.find(c => {
         return c.topic == payload.topicID;
       });
@@ -74,8 +80,8 @@ export default {
     searchForTopic(context, query) {
       context.commit("searchForTopic", query);
     },
-    addContact(context, topicID) {
-      context.commit("addContact", topicID);
+    addContact(context, topic) {
+      context.commit("addContact", topic);
     },
     setSearchResults(context, results) {
       context.commit("setSearchResults", results);

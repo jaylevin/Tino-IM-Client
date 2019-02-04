@@ -141,11 +141,8 @@ export default {
   }, // END of actions
 
   getters: {
-    session(state) {
-      return state.session;
-    },
-    profile(state) {
-      return state.profile;
-    }
+    session: state => state.session,
+    profile: state => state.profile,
+    getTopic: state => topicID => state.tinodeClient.getTopic(topicID)
   }
 };
