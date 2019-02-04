@@ -17,7 +17,7 @@
           <label for="email"><b>Enter a name or email:</b></label>
           <input class="input" type="text" v-model="addContactForm.searchQuery" required>
 
-          <!-- Search Results -->
+          <!-- Search Results List -->
           <ul class="search-results" v-if="addContactForm.searchResults.length > 0">
             <h1>Search Results</h1>
             <div class="divider"></div>
@@ -37,7 +37,6 @@
           <!-- End of Search Results -->
 
           <button @click="searchForContact" class="button is-success submit">Submit</button>
-          <button @click="toggleAddContactForm" class="button is-danger">Cancel</button>
         </form>
       </div>
     </div>
@@ -49,11 +48,15 @@
         <a>
           <div class="columns is-gapless is-vcentered">
               <div class="column is-one-fifth is-v">
-                <figure class="image is-32x32"><img class="is-rounded" :src="contact.public.photo.data"></figure>
+                <figure class="image is-32x32">
+                  <img class="is-rounded"
+                  :class="{'is-online': contact.isOnline}"
+                  :src="contact.public.photo.data">
+                </figure>
               </div>
               <div class="column">
                   <p class="contact-name">
-                    name
+                    {{contact.public.fn}}
                   </p>
 
                   <p class="lastMessage">
@@ -101,6 +104,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.is-rounded.is-online {
+  border: 1.5px solid #7df442;
+}
 .menu {
   p.menu-label {
     color: $accent;
@@ -142,7 +148,7 @@ a.is-active {
   }
   p.lastMessage {
     color: white;
-    margin-left: 8px;
+    margin-left: 3px;
   }
 }
 

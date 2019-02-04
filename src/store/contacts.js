@@ -58,6 +58,15 @@ export default {
         state.addContactForm.searchQuery = "";
       }
       state.addContactForm.isVisible = status;
+    },
+    setContactsList(state, contacts) {
+      state.contacts = contacts;
+    },
+    updateTopicPresence(state, payload) {
+      let contact = state.contacts.find(c => {
+        return c.topic == payload.topicID;
+      });
+      contact.isOnline = payload.presence;
     }
   }, // END of mutations
 
@@ -73,6 +82,12 @@ export default {
     },
     toggleAddContactForm(context, status) {
       context.commit("toggleAddContactForm", status);
+    },
+    setContactsList(context, contacts) {
+      context.commit("setContactsList", contacts);
+    },
+    updateTopicPresence(context, payload) {
+      context.commit("updateTopicPresence", payload);
     }
   }, // END of actions
 

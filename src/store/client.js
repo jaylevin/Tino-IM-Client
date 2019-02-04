@@ -16,7 +16,7 @@ export default {
     tinodeClient: tClient,
     profile: {
       displayName: "", // user.public.fn
-      avatar: {} // user.public.photo.data
+      avatar: {} // user.public.photo
     }
     // session: cookieCache
   },
@@ -41,7 +41,17 @@ export default {
           var fnd = state.tinodeClient.getFndTopic();
           me.onMeta = function(meta) {
             console.log("Received me.onMeta:", meta);
+            if (meta.sub) {
+              var subs = [];
+              meta.sub.forEach(sub => {
+                sub.isOnline = false;
+                subs.push(sub);
+              });
+              store.dispatch("setContactsList", subs);
+              console.log("subs:", subs);
+            }
           };
+
           me.onMetaDesc = function(meta) {
             console.log("Received topic metadata update: ", meta);
             if (meta.public) {
@@ -55,9 +65,13 @@ export default {
 
           me.onPres = function(pres) {
             console.log("Presence msg:", pres);
-            if (state.tinodeClient.getTopic(pres.src).isSubscribed()) {
-            } else {
-              // Client has a friend request
+            if (pres.topic == "me") {
+              if (pres.what == "on" || pres.what == "off") {
+                store.dispatch("updateTopicPresence", {
+                  topicID: pres.src,
+                  presence: pres.what == "on" ? true : false
+                });
+              }
             }
           };
 
