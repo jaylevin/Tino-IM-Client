@@ -29,28 +29,37 @@ export default {
           });
       });
     },
+
     addContact(state, topic) {
-      console.log("adding topic:", topic);
       state.contacts.push(topic);
       topic = store.getters.getTopic(topic.user);
+      topic.subscribe().then(() => {});
+    },
 
-      topic.subscribe().then(() => {
-        var requesterID = store.state.client.tinodeClient.getCurrentUserID();
-        axios
-          .post("http://localhost:8000/friend_requests", {
-            requester_id: requesterID,
-            receiver_id: topic.user
-          })
-          .then(resp => {
-            console.log(resp);
-          });
+    removeContact(state, topicID) {
+      // Remove contact from UI
+      let contacts = state.contacts;
+      for (var i = 0; i < contacts.length; i++) {
+        if (contacts[i].topic == topicID) {
+          // found the contact to delete
+          contacts.splice(i, 1);
+          break;
+        }
+      }
+
+      // Unsubscribe from topic on IM Server
+      let topicToDel = store.getters.getTopic(topicID);
+      topicToDel.leave(true).then(ctrl => {
+        console.log("Left topic: ", ctrl);
       });
     },
+
     setSearchResults(state, results) {
       console.log("Setting results:", results);
       state.addContactForm.searchResults = results;
       state.addContactForm.searchResults = results;
     },
+
     toggleAddContactForm(state, status) {
       if (!status) {
         // clear form and reset the results list
@@ -72,7 +81,9 @@ export default {
       let contact = state.contacts.find(c => {
         return c.topic == payload.topicID;
       });
-      contact.isOnline = payload.presence;
+      if (contact) {
+        contact.isOnline = payload.presence;
+      }
     }
   }, // END of mutations
 
@@ -82,6 +93,9 @@ export default {
     },
     addContact(context, topic) {
       context.commit("addContact", topic);
+    },
+    removeContact(context, topicID) {
+      context.commit("removeContact", topicID);
     },
     setSearchResults(context, results) {
       context.commit("setSearchResults", results);

@@ -45,7 +45,9 @@ export default {
               var subs = [];
               meta.sub.forEach(sub => {
                 sub.isOnline = false;
-                subs.push(sub);
+                state.tinodeClient.subscribe(sub.topic).then(ctrl => {
+                  subs.push(sub);
+                });
               });
               store.dispatch("setContactsList", subs);
               console.log("subs:", subs);
@@ -54,24 +56,43 @@ export default {
 
           me.onMetaDesc = function(meta) {
             console.log("Received topic metadata update: ", meta);
-            if (meta.public) {
-              store.dispatch("setProfile", {
-                displayName: meta.public.fn,
-                avatar: meta.public.photo
-              });
+            if (meta.name == "me") {
+              if (meta.public) {
+                store.dispatch("setProfile", {
+                  displayName: meta.public.fn,
+                  avatar: meta.public.photo
+                });
+              }
             }
             router.push("chat");
           };
 
           me.onPres = function(pres) {
             console.log("Presence msg:", pres);
-            if (pres.topic == "me") {
-              if (pres.what == "on" || pres.what == "off") {
-                store.dispatch("updateTopicPresence", {
-                  topicID: pres.src,
-                  presence: pres.what == "on" ? true : false
-                });
+            let contact = store.getters.contacts.find(c => {
+              return c.topic == pres.src;
+            });
+            if (contact) {
+              if (pres.topic == "me") {
+                switch (pres.what) {
+                  case "on" || "off":
+                    if (contact) {
+                      store.dispatch("updateTopicPresence", {
+                        topicID: pres.src,
+                        presence: pres.what == "on" ? true : false
+                      });
+                    }
+                    break;
+
+                  case "msg":
+                    contact.isOnline = payload.presence;
+                    break;
+                }
               }
+            } else {
+              console.log(
+                "Received a presence message from someone whom client is not subbed to"
+              );
             }
           };
 

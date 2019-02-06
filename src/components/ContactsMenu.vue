@@ -1,15 +1,21 @@
 <template>
   <aside class="menu contacts">
-    <div class="columns is-gapless is-vcentered contacts-header">
+    <div class="columns is-vcentered contacts-header">
       <div class="column">
         <p class="menu-label">
           Contacts
         </p>
       </div>
       <div class="column">
-        <a @click="toggleAddContactForm" :class="{'is-active': addContactForm.isVisible}" class="button is-success add-contact">+</a>
+        <a :class="{'is-active': addContactForm.isVisible}" @click="toggleAddContactForm" class="button is-success add-contact">+</a>
       </div>
     </div>
+    <context-menu
+      :options="contextMenuItems"
+      elementId="contactContextMenu"
+      ref="contactContextMenu"
+      @optionClicked="contactEllipsisItemClicked">
+    </context-menu>
     <div class="column" v-if="addContactForm.isVisible">
       <div class="form-popup" id="addContactForm">
         <form submit.prevent="" class="form-container">
@@ -43,38 +49,55 @@
 
     <div class="divider"></div>
 
-    <ul v-for="contact in contacts" v-if="contacts.length > 0" class="menu-list">
+    <ul v-for="contact in contacts" v-if="contacts.length > 0">
       <li>
         <a>
-          <div class="columns is-gapless is-vcentered">
-              <div class="column is-one-fifth is-v">
-                <figure class="image is-32x32">
-                  <img class="is-rounded"
-                  :class="{'is-online': contact.isOnline}"
-                  :src="contact.public.photo.data">
-                </figure>
-              </div>
-              <div class="column">
+          <div class="contact">
+
+              <div class="contact-avatar">
+                  <figure class="image is-32x32"><img class="is-rounded"
+                    :src="contact.public.photo.data">
+                  </figure>
+               </div>
+
+              <div>
                   <p class="contact-name">
                     {{contact.public.fn}}
                   </p>
-
-                  <p class="lastMessage">
-                    last message
-                  </p>
               </div>
+
+              <div class="contact-right">
+                <div v-if="contact.isOnline" class="contact-presence">
+                    <span>&#183;</span>
+                </div>
+                <div @click.prevent.stop="contactEllipsisClicked($event, contact)" class="contact-ellipsis">
+                    <span>&#8942;</span>
+                </div>
+            </div>
           </div>
         </a>
       </li>
     </ul>
+    <div class="divider"></div>
+      <ul v-for="reqs in friendRequests"
   </aside>
 </template>
 
 <script>
 import store from "@/store/store.js";
+import ContextMenu from "@/components/ContextMenu.vue";
 
 export default {
   name: "ContactsMenu",
+  components: { ContextMenu },
+  data() {
+    return {
+      contextMenuItems: [
+        { name: "Remove contact" },
+        { name: "Turn Notifications On" }
+      ]
+    };
+  },
   computed: {
     addContactForm() {
       return store.getters.addContactForm;
@@ -98,31 +121,69 @@ export default {
           "basic:" + this.addContactForm.searchQuery
         );
       }
+    },
+    // Contact context menu ellipsis drop down
+    contactEllipsisClicked(event, item) {
+      this.$refs.contactContextMenu.showMenu(event, item);
+    },
+    contactEllipsisItemClicked(event) {
+      switch (event.option.name) {
+        case "Remove contact":
+          let topicID = event.item.topic;
+          store.dispatch("removeContact", topicID);
+          break;
+
+        case "Turn Notifications On":
+          console.log("Turn Notifications On clicked");
+          break;
+      }
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-.is-rounded.is-online {
-  border: 1.5px solid #7df442;
+.menu-label {
+  color: $accent;
 }
-.menu {
-  p.menu-label {
-    color: $accent;
+
+.contact {
+  display: flex;
+  align-items: center;
+  color: #dbe7f9;
+  margin-top: 6px;
+
+  :hover {
   }
-  ul {
-    li {
-      .is-active {
-        background: $accent;
+
+  .contact-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+
+    .contact-presence {
+      color: #7df442;
+      margin-right: 15px;
+      font-weight: bold;
+      font-size: 2em;
+    }
+
+    .contact-ellipsis {
+      font-size: 1.5em;
+      :hover {
+        color: $grey-dark;
       }
-      a {
-        color: white;
-        &:hover {
-          background: rgba(0, 0, 0, 0.5);
-        }
+      :active {
+        color: $accent;
       }
     }
+  }
+  .contact-name {
+    margin-left: 5px;
+  }
+
+  .contact-avatar {
+    margin-right: 8px;
   }
 }
 
@@ -134,33 +195,6 @@ figure {
 .button.add-contact {
   margin-bottom: 10px;
   float: right;
-}
-
-.contact-name {
-  color: $accent;
-  font-size: 1.25em;
-  margin-left: 10px;
-}
-
-a.is-active {
-  p.contact-name {
-    color: black;
-  }
-  p.lastMessage {
-    color: white;
-    margin-left: 3px;
-  }
-}
-
-.is-gapless.is-vcentered.contacts-header {
-  margin-bottom: 0;
-}
-
-div.divider {
-  width: 100%;
-  height: 0.5px;
-  border: 0.5px solid $grey-dark;
-  margin-bottom: 15px;
 }
 
 .contacts {

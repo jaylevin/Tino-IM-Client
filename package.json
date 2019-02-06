@@ -14,6 +14,7 @@
     "bulma-divider": "^2.0.1",
     "bulma-extensions": "^3.0.0",
     "tinode-sdk": "^0.15.7",
+    "v-click-outside": "^2.0.2",
     "vue": "^2.5.17",
     "vue-axios": "^2.1.4",
     "vue-router": "^3.0.1",
