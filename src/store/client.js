@@ -85,7 +85,7 @@ export default {
                     break;
 
                   case "msg":
-                    contact.isOnline = payload.presence;
+                    // presence message for a notification
                     break;
                 }
               }
