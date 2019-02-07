@@ -12,16 +12,30 @@ class Msg {
 
 export default {
   state: {
-    messagesCache: new Map()
+    messagesCache: new Map(),
+    userDetailsDrawerToggled: false
   },
 
-  mutations: {}, // END of mutations
+  mutations: {
+    toggleUserDetailsDrawer(state, status) {
+      console.log("Status:", status);
+      state.userDetailsDrawerToggled = status;
+    }
+  }, // END of mutations
 
-  actions: {}, // END of actions
+  actions: {
+    toggleUserDetailsDrawer(context, status) {
+      console.log("Committing", status);
+      context.commit("toggleUserDetailsDrawer", status);
+    }
+  }, // END of actions
 
   getters: {
     getMessages: state => {
       return state.messagesCache;
+    },
+    userDetailsDrawerToggled: state => {
+      return state.userDetailsDrawerToggled;
     }
   }
 };

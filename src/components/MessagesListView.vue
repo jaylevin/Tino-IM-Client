@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <div class="messages columns is-multiline">
-      <div class="column">
+    <div class="messages-view">
+
+      <div class="list-view">
         <ul id="messages" tabindex="1" class="messages-ul">
             <message v-for="message in messages"
                      :from="message.from"
@@ -11,34 +11,52 @@
                      :markedToDel="false">
             </message>
         </ul>
-        <a class="button is-danger delete-btn">
-          Cancel
-        </a>
-        <a class="button is-danger delete-btn">
-          Delete Selected
-        </a>
-      </div>
-    </div>
 
-    <!-- <div style="margin-top:0.5em;" class="is-divider"></div> -->
-
-    <!-- Send message controls -->
-    <div class="columns is-gapless is-vcentered">
-      <div class="column is-four-fifths message-input">
-        <div class="field has-addons">
-          <textarea rows="1" v-model="messageInput" class="textarea" placeholder="Type something..."></textarea>
-        </div>
-      </div>
-
-      <div class="column send-button">
-        <div class="control">
-          <a @click="sendMessage(messageInput)" class="button is-info">
-            Send
+      <div class="controls">
+        <div>
+          <a class="button is-danger delete-btn">
+            Cancel
           </a>
         </div>
+
+        <div>
+          <a class="button is-danger delete-btn">
+            Delete Selected
+          </a>
+        </div>
+
       </div>
 
+
+      <!-- Send message controls -->
+      <div class="send-message">
+        <div class="message-input">
+          <div class="field has-addons">
+            <textarea rows="1" v-model="messageInput" class="textarea" placeholder="Type something..."></textarea>
+          </div>
+        </div>
+
+        <div class="send-button">
+          <div class="control">
+            <a @click="sendMessage(messageInput)" class="button is-info">
+              Send
+            </a>
+          </div>
+        </div>
+
+      </div>
     </div>
+
+    <button class="button" @click="toggleUserDetailsDrawer(!userDetailsDrawerToggled)">++</button>
+    <transition
+      name="custom-classes-transition"
+      enter-active-class="animated bounceInRight"
+      leave-active-class="animated bounceOutRight"
+    >
+    <div v-if="userDetailsDrawerToggled" class="user-details-drawer">
+      <p>User details drawer</p>
+    </div>
+  </transition>
   </div>
 </template>
 
@@ -55,7 +73,13 @@ export default {
     return {
       messageInput: "",
       messages: []
+      // userDetailsDrawerOpened: false
     };
+  },
+  computed: {
+    userDetailsDrawerToggled() {
+      return store.getters.userDetailsDrawerToggled;
+    }
   },
   mounted() {
     // scrolling ability
@@ -69,12 +93,53 @@ export default {
       msgs.scrollTop = msgs.scrollHeight;
     }
   },
-  computed: {},
-  methods: {}
+  methods: {
+    toggleUserDetailsDrawer(status) {
+      console.log("Toggling");
+      store.dispatch("toggleUserDetailsDrawer", status);
+    }
+  }
 };
 </script>
 
 <style scoped lang="scss">
+.messages-view {
+  padding: 8px;
+  margin: 5px;
+  display: flex;
+
+  .list-view {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid $grey-darker;
+    width: 100%;
+  }
+
+  .controls {
+    margin-left: 12px;
+  }
+
+  .send-message {
+    display: flex;
+    margin-top: 15px;
+
+    .message-input {
+      width: 100%;
+    }
+    .send-button {
+      margin: 5px;
+    }
+  }
+
+  .user-details-drawer {
+    margin-left: 5px;
+    margin-right: 5px;
+    display: flex;
+    border: 1px solid $grey-darker;
+    color: white;
+  }
+}
+
 textarea {
   background: transparent;
   resize: none;
@@ -82,17 +147,9 @@ textarea {
   color: white;
 }
 
-.column.is-four-fifths.message-input {
-  margin-right: 5px;
-}
-
 textarea::placeholder {
   color: white;
   font-style: italic;
-}
-
-div.message-input {
-  margin-right: 10px;
 }
 
 .messages-ul {
@@ -103,16 +160,9 @@ div.message-input {
     outline: 0 !important;
   }
 }
+
 .delete-btn {
   float: left;
   margin-right: 5px;
-}
-.messages {
-  padding: 5px;
-  margin-right: 15px;
-  border: 1px solid $grey-darker;
-  .title {
-    text-align: left;
-  }
 }
 </style>
