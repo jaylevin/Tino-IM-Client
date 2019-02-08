@@ -9,9 +9,10 @@
 
 ## In Progress:
 * Animated `UserDetailsDrawer` in `MessagesListView` component
-* Load Messages
+* Load Message history
 * Send Messages
 * Remove contact/unsubscribe from topic
+* Select topic
 
 ## Planned:
 * Group topics
