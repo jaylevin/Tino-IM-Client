@@ -6,7 +6,6 @@
 * Search & Add contact by username/email
 * Basic message history and message sending/receiving
 * Contact online/offline status updates
-* 
 
 ## In Progress:
 * Animated `UserDetailsDrawer` in `MessagesListView` component
