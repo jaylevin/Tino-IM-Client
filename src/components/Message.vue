@@ -13,14 +13,14 @@
 				    <img class="is-rounded" :src="avatarURI" v-model="avatarURI">
 				</figure>
 					<div class="message-head">
-						<div class="delete-msg" v-if="isDeleting">
+						 <!-- <div class="delete-msg" v-if="isDeleting">
 							<a :class="{'is-outlined': !msg.markedToDel}" @click="msg.markToDel()" class="button is-danger">
-								<!-- <span>Delete</span> -->
+							  <span>Delete</span>
 								<span class="icon is-small">
 									<i class="fas fa-times"></i>
 								</span>
 							</a>
-						</div>
+						</div> -->
 				    {{ fromFN }}
 						<small class="timestamp">  {{ ts }} </small>
 				  </div>
@@ -60,14 +60,43 @@ export default {
       this.count = 0;
     }
   },
-  computed: {}
+  computed: {
+    isIncoming() {
+      let clientID = store.state.client.tinodeClient.getCurrentUserID();
+      if (clientID == this.from) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    fromProfile() {
+      if (this.isIncoming) {
+        let profile = store.getters.profile;
+        return {
+          public: {
+            fn: profile.displayName,
+            photo: profile.avatar
+          }
+        };
+      } else {
+        return store.getters.getTopic(this.from);
+      }
+    },
+    avatarURI() {
+      return this.fromProfile.public.photo.data;
+    },
+    fromFN() {
+      return this.fromProfile.public.fn;
+    }
+  }
 };
 </script>
 
 <style lang="scss">
 .msg {
   radius: 50px;
-  padding: 0px;
+  // padding: 15px;
+  margin: 15px;
   margin-bottom: 15px;
   text-align: left;
   radius: 5px;

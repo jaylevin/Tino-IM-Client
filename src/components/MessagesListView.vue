@@ -12,7 +12,7 @@
             </message>
         </ul>
 
-      <div class="controls">
+      <!-- <div class="controls">
         <div>
           <a class="button is-danger delete-btn">
             Cancel
@@ -25,7 +25,7 @@
           </a>
         </div>
 
-      </div>
+      </div> -->
 
 
       <!-- Send message controls -->
@@ -47,8 +47,8 @@
       </div>
     </div>
 
-    <button class="button" @click="toggleUserDetailsDrawer(!userDetailsDrawerToggled)">++</button>
-    <transition
+    <!-- <button class="button" @click="toggleUserDetailsDrawer(!userDetailsDrawerToggled)">++</button> -->
+    <!-- <transition
       name="custom-classes-transition"
       enter-active-class="animated bounceInRight"
       leave-active-class="animated bounceOutRight"
@@ -56,13 +56,14 @@
     <div v-if="userDetailsDrawerToggled" class="user-details-drawer">
       <p>User details drawer</p>
     </div>
-  </transition>
+  </transition> -->
   </div>
 </template>
 
 <script>
 import Message from "@/components/Message.vue";
 import store from "@/store/store.js";
+import { mapGetters } from "vuex";
 
 export default {
   name: "MessagesListView",
@@ -71,14 +72,28 @@ export default {
   },
   data() {
     return {
-      messageInput: "",
-      messages: []
-      // userDetailsDrawerOpened: false
+      messageInput: ""
     };
   },
   computed: {
+    messages() {
+      return store.getters.messages;
+    },
+
+    selectedTopic() {
+      return store.getters.selectedTopic;
+    },
+
     userDetailsDrawerToggled() {
       return store.getters.userDetailsDrawerToggled;
+    }
+  },
+  watchers: {
+    messages(oldMsgs, newMsgs) {
+      console.log("newMsgs:", newMsgs);
+    },
+    selectedTopic(old, newT) {
+      console.log("Selected new topic:", newT);
     }
   },
   mounted() {
@@ -111,8 +126,11 @@ export default {
   .list-view {
     display: flex;
     flex-direction: column;
-    border: 1px solid $grey-darker;
     width: 100%;
+
+    #messages {
+      border: 1px solid $grey-darker;
+    }
   }
 
   .controls {

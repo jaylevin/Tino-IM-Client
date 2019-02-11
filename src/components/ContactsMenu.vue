@@ -10,12 +10,15 @@
         <a :class="{'is-active': addContactForm.isVisible}" @click="toggleAddContactForm" class="button is-success add-contact">+</a>
       </div>
     </div>
+
+    <!-- Contact Context menu -->
     <context-menu
       :options="contextMenuItems"
       elementId="contactContextMenu"
       ref="contactContextMenu"
       @optionClicked="contactEllipsisItemClicked">
     </context-menu>
+
     <div class="column" v-if="addContactForm.isVisible">
       <div class="form-popup" id="addContactForm">
         <form submit.prevent="" class="form-container">
@@ -49,11 +52,11 @@
 
     <div class="divider"></div>
 
-    <ul v-for="contact in contacts" v-if="contacts.length > 0">
-      <li>
+    <ul class="contacts-list" v-for="contact in contacts" v-if="contacts.length > 0">
+      <li @click="selectTopic(contact)":class="{'is-active': selectedTopic.topic == contact.topic }">
         <a>
-          <div class="contact">
 
+          <div class="contact">
               <div class="contact-avatar">
                   <figure class="image is-32x32"><img class="is-rounded"
                     :src="contact.public.photo.data">
@@ -74,6 +77,7 @@
                     <span>&#8942;</span>
                 </div>
             </div>
+
           </div>
         </a>
       </li>
@@ -102,10 +106,14 @@ export default {
     addContactForm() {
       return store.getters.addContactForm;
     },
+    selectedTopic() {
+      return store.getters.selectedTopic;
+    },
     contacts() {
       return store.getters.contacts;
     }
   },
+
   methods: {
     toggleAddContactForm() {
       store.dispatch("toggleAddContactForm", !this.addContactForm.isVisible);
@@ -113,6 +121,31 @@ export default {
     addContact(topic) {
       store.dispatch("addContact", topic);
     },
+
+    // User clicks on a contact in their contacts list
+    selectTopic(topic) {
+      let topicObj = store.getters.getTopic(topic.topic);
+
+      if (topicObj != store.getters.selectedTopic) {
+        topicObj.subscribe().then(ctrl => {
+          if (ctrl.code == 200) {
+            store.dispatch("selectTopic", topicObj);
+
+            topicObj
+              .getMessagesPage(20, true)
+              .then(ctrl => {
+                console.log("get messages page ctrl obj:", ctrl);
+              })
+              .then(() => {
+                store.dispatch("renderMessages");
+              });
+          }
+        });
+      } else {
+        console.log("Topic already selected");
+      }
+    },
+
     searchForContact() {
       if (this.addContactForm.searchQuery.length) {
         console.log("Searching for contact:", this.addContactForm.searchQuery);
@@ -147,13 +180,20 @@ export default {
   color: $accent;
 }
 
+li.is-active {
+  background-color: $grey-dark;
+  color: $grey-darker;
+}
+
 .contact {
   display: flex;
+  justify-content: center;
   align-items: center;
   color: #dbe7f9;
   margin-top: 6px;
 
   :hover {
+    color: $accent;
   }
 
   .contact-right {
@@ -183,7 +223,10 @@ export default {
   }
 
   .contact-avatar {
-    margin-right: 8px;
+    margin-left: 5px;
+    margin-top: 5px;
+    align-self: flex-end;
+    margin-right: 3px;
   }
 }
 

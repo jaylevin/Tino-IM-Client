@@ -24,7 +24,8 @@ export default {
   mutations: {
     // Login
     authenticate(state, request) {
-      state.tinodeClient
+      let client = state.tinodeClient;
+      client
         .connect()
         .then(() => {
           return state.tinodeClient.loginBasic(
@@ -43,15 +44,19 @@ export default {
             console.log("Received me.onMeta:", meta);
             if (meta.sub) {
               var subs = [];
+
               meta.sub.forEach(sub => {
                 sub.isOnline = false;
-                state.tinodeClient.subscribe(sub.topic).then(ctrl => {
-                  subs.push(sub);
-                });
+                subs.push(sub);
               });
+
               store.dispatch("setContactsList", subs);
-              console.log("subs:", subs);
             }
+          };
+
+          client.onDataMessage = function(data) {
+            console.log("Received data:", data);
+            store.dispatch("storeMessage", data);
           };
 
           me.onMetaDesc = function(meta) {
@@ -66,6 +71,9 @@ export default {
             }
             router.push("chat");
           };
+          // client.onDataMessage = function(data) {
+          //   console.log("Received data msg:", data);
+          // };
 
           me.onPres = function(pres) {
             console.log("Presence msg:", pres);

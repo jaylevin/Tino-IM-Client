@@ -3,6 +3,7 @@ import axios from "axios";
 export default {
   state: {
     contacts: [],
+    selectedTopic: {},
     addContactForm: {
       searchQuery: "",
       searchResults: [],
@@ -84,6 +85,10 @@ export default {
       if (contact) {
         contact.isOnline = payload.presence;
       }
+    },
+    selectTopic(state, topic) {
+      console.log("Selecting topic", topic);
+      state.selectedTopic = topic;
     }
   }, // END of mutations
 
@@ -93,6 +98,10 @@ export default {
     },
     addContact(context, topic) {
       context.commit("addContact", topic);
+    },
+    selectTopic(context, topic) {
+      console.log("Selecting topic action:", topic);
+      context.commit("selectTopic", topic);
     },
     removeContact(context, topicID) {
       context.commit("removeContact", topicID);
@@ -107,6 +116,7 @@ export default {
       context.commit("setContactsList", contacts);
     },
     updateTopicPresence(context, payload) {
+      console.log("Updating topic presence:", payload);
       context.commit("updateTopicPresence", payload);
     }
   }, // END of actions
@@ -114,6 +124,9 @@ export default {
   getters: {
     contacts(state) {
       return state.contacts;
+    },
+    selectedTopic(state) {
+      return state.selectedTopic;
     },
     addContactForm(state) {
       return state.addContactForm;

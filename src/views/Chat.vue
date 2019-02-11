@@ -5,10 +5,10 @@
         <contacts-menu></contacts-menu>
       </div>
       <div class="column">
-        <h1>Messages
-          <h1>with </h1>
-        </h1>
-        <messages-list-view></messages-list-view>
+        <div class="messages-header">
+          Hello world
+        </div>
+          <messages-list-view></messages-list-view>
       </div>
     </div>
   </div>
@@ -50,12 +50,9 @@ export default {
 .chat {
   margin: 15px;
 }
-h1 {
-  display: inline-block;
-  color: white;
-  font-weight: bold;
-  margin: 3px;
-  font-size: 1.25em;
-  margin-bottom: 15px;
+.messages-header {
+  border: 1px solid black;
+  height: 35px;
+  background-color: $accent;
 }
 </style>
