@@ -11,15 +11,19 @@ var tClient = tinode.NewClient();
 //   console.log("found token:", cookieCache.getItem("token"));
 // }
 
-export default {
-  state: {
+export function defaultState() {
+  return {
     tinodeClient: tClient,
     profile: {
       displayName: "", // user.public.fn
       avatar: {} // user.public.photo
     }
-    // session: cookieCache
-  },
+  };
+}
+
+export default {
+  state: defaultState,
+  // session: cookieCache
 
   mutations: {
     // Login
@@ -125,6 +129,7 @@ export default {
     },
     logout(state) {
       state.tinodeClient.disconnect();
+      router.push("");
     },
 
     // Register a new account

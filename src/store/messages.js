@@ -1,11 +1,14 @@
 import store from "@/store/store.js";
 
-export default {
-  state: {
+function defaultState() {
+  return {
     messagesCache: new Map(),
     currentMessages: [],
     userDetailsDrawerToggled: false
-  },
+  };
+}
+export default {
+  state: defaultState,
 
   mutations: {
     storeMessage(state, message) {
@@ -40,7 +43,6 @@ export default {
       context.commit("toggleUserDetailsDrawer", status);
     },
     renderMessages(context) {
-      console.log("rendering msgs");
       context.commit("renderMessages");
     },
 

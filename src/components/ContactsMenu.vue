@@ -1,25 +1,16 @@
 <template>
-  <aside class="menu contacts">
-    <div class="columns is-vcentered contacts-header">
-      <div class="column">
-        <p class="menu-label">
-          Contacts
-        </p>
+  <div class="contacts">
+    <div class="contacts-header">
+      <div class="header-text">
+        Messages
       </div>
-      <div class="column">
+      <div class="plus-button">
         <a :class="{'is-active': addContactForm.isVisible}" @click="toggleAddContactForm" class="button is-success add-contact">+</a>
       </div>
     </div>
 
-    <!-- Contact Context menu -->
-    <context-menu
-      :options="contextMenuItems"
-      elementId="contactContextMenu"
-      ref="contactContextMenu"
-      @optionClicked="contactEllipsisItemClicked">
-    </context-menu>
 
-    <div class="column" v-if="addContactForm.isVisible">
+    <div id="scrollbar" class="contacts" v-if="addContactForm.isVisible">
       <div class="form-popup" id="addContactForm">
         <form submit.prevent="" class="form-container">
 
@@ -47,61 +38,51 @@
 
           <button @click="searchForContact" class="button is-success submit">Submit</button>
         </form>
+            <div class="divider"></div>
       </div>
     </div>
 
-    <div class="divider"></div>
+    <div class="contacts-list-view">
+      <ul class="contacts-list" v-for="contact in contacts" v-if="contacts.length > 0">
+        <li @click="selectTopic(contact)":class="{'is-active': selectedTopic.topic == contact.topic }">
+          <a>
 
-    <ul class="contacts-list" v-for="contact in contacts" v-if="contacts.length > 0">
-      <li @click="selectTopic(contact)":class="{'is-active': selectedTopic.topic == contact.topic }">
-        <a>
+            <div class="contact">
+                <div class="contact-avatar">
+                    <figure class="image is-32x32"><img class="is-rounded"
+                      :src="contact.public.photo.data">
+                    </figure>
+                 </div>
 
-          <div class="contact">
-              <div class="contact-avatar">
-                  <figure class="image is-32x32"><img class="is-rounded"
-                    :src="contact.public.photo.data">
-                  </figure>
-               </div>
+                <div>
+                    <p class="contact-name">
+                      {{contact.public.fn}}
+                    </p>
+                </div>
 
-              <div>
-                  <p class="contact-name">
-                    {{contact.public.fn}}
-                  </p>
+                <div class="contact-right">
+                  <div v-if="contact.isOnline" class="contact-presence">
+                      <span>&#183;</span>
+                  </div>
+                  <div @click.prevent.stop="contactEllipsisClicked($event, contact)" class="contact-ellipsis">
+                      <span>&#8942;</span>
+                  </div>
               </div>
-
-              <div class="contact-right">
-                <div v-if="contact.isOnline" class="contact-presence">
-                    <span>&#183;</span>
-                </div>
-                <div @click.prevent.stop="contactEllipsisClicked($event, contact)" class="contact-ellipsis">
-                    <span>&#8942;</span>
-                </div>
             </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-          </div>
-        </a>
-      </li>
-    </ul>
-    <div class="divider"></div>
-      <ul v-for="reqs in friendRequests"
-  </aside>
 </template>
 
 <script>
 import store from "@/store/store.js";
-import ContextMenu from "@/components/ContextMenu.vue";
 
 export default {
-  name: "ContactsMenu",
-  components: { ContextMenu },
-  data() {
-    return {
-      contextMenuItems: [
-        { name: "Remove contact" },
-        { name: "Turn Notifications On" }
-      ]
-    };
-  },
+  components: {},
+
   computed: {
     addContactForm() {
       return store.getters.addContactForm;
@@ -125,8 +106,16 @@ export default {
     // User clicks on a contact in their contacts list
     selectTopic(topic) {
       let topicObj = store.getters.getTopic(topic.topic);
+      let client = store.state.client.$tinodeClient;
 
       if (topicObj != store.getters.selectedTopic) {
+        console.log(topicObj, "!=", store.getters.selectedTopic);
+        console.log("topic obj subscribed:", topicObj.isSubscribed());
+        if (topicObj.isSubscribed()) {
+          store.state.client.tinodeClient
+            .leave(store.getters.selectedTopic.topic)
+            .then(() => {});
+        }
         topicObj.subscribe().then(ctrl => {
           if (ctrl.code == 200) {
             store.dispatch("selectTopic", topicObj);
@@ -176,8 +165,47 @@ export default {
 </script>
 
 <style scoped lang="scss">
+#scrollbar::-webkit-scrollbar {
+  width: 12px;
+  background-color: $grey-darker;
+}
+#scrollbar::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: $grey-darker;
+}
+#scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: $grey-dark;
+}
 .menu-label {
   color: $accent;
+}
+.contacts {
+  -webkit-box-shadow: 1px 0px 0px 0px $grey-dark;
+  -moz-box-shadow: 1px 0px 0px 0px $grey-dark;
+  box-shadow: 1px 0px 0px 0px $grey-dark;
+  min-height: 25px;
+  height: 80vh;
+  flex-direction: column;
+  padding: 8px;
+  overflow-y: scroll;
+
+  .contacts-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .header-text {
+      color: $accent;
+      font-size: 1em;
+      margin-right: auto;
+    }
+    .plus-button {
+      align-self: center;
+    }
+  }
 }
 
 li.is-active {
@@ -235,15 +263,8 @@ figure {
   margin: 0px;
 }
 
-.button.add-contact {
-  margin-bottom: 10px;
-  float: right;
-}
-
 .contacts {
   background: rgba(54, 54, 54, 0.5);
-  padding: 15px;
-  text-align: left;
 }
 
 /* Popup add-contact form */

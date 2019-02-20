@@ -6,6 +6,12 @@ import contactsStore from "./contacts.js";
 
 Vue.use(Vuex);
 
+let initialState = {
+  messages: messagesStore.defaultState,
+  client: clientStore.defaultState,
+  contacts: contactsStore.defaultState
+};
+
 export default new Vuex.Store({
   modules: {
     messages: messagesStore,

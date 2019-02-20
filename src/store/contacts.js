@@ -1,7 +1,8 @@
 import store from "@/store/store.js";
 import axios from "axios";
-export default {
-  state: {
+
+export function defaultState() {
+  return {
     contacts: [],
     selectedTopic: {},
     addContactForm: {
@@ -9,7 +10,11 @@ export default {
       searchResults: [],
       isVisible: false
     }
-  },
+  };
+}
+
+export default {
+  state: defaultState,
 
   mutations: {
     searchForTopic(state, query) {

@@ -1,5 +1,5 @@
 <template>
-		<div class="columns is-multiline">
+		<div class="columns is-multiline message-view">
 			<div @mousedown="start"
 					 @mouseleave="stop"
 					 @mouseup="stop"
@@ -95,7 +95,7 @@ export default {
 <style lang="scss">
 .msg {
   radius: 50px;
-  // padding: 15px;
+  padding: 15px;
   margin: 15px;
   margin-bottom: 15px;
   text-align: left;

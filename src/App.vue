@@ -20,8 +20,8 @@ html {
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
-  background-image: url("https://raw.githubusercontent.com/ahsanazim/slack-landing-page/master/screen_caps/main_background.jpg");
-  background-color: #cccccc;
+  // background-image: url("https://raw.githubusercontent.com/ahsanazim/slack-landing-page/master/screen_caps/main_background.jpg");
+  background-color: $grey-darker;
   background-size: cover;
 }
 #app {

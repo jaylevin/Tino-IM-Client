@@ -24,9 +24,7 @@
             Delete Selected
           </a>
         </div>
-
       </div> -->
-
 
       <!-- Send message controls -->
       <div class="send-message">
@@ -118,6 +116,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
+#messages::-webkit-scrollbar {
+  width: 12px;
+  background-color: $grey-darker;
+}
+#messages::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: $grey-darker;
+}
+#messages::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: $grey-dark;
+}
 .messages-view {
   padding: 8px;
   margin: 5px;
@@ -127,10 +139,6 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-
-    #messages {
-      border: 1px solid $grey-darker;
-    }
   }
 
   .controls {
@@ -147,14 +155,6 @@ export default {
     .send-button {
       margin: 5px;
     }
-  }
-
-  .user-details-drawer {
-    margin-left: 5px;
-    margin-right: 5px;
-    display: flex;
-    border: 1px solid $grey-darker;
-    color: white;
   }
 }
 
@@ -174,6 +174,7 @@ textarea::placeholder {
   height: 70vh;
   overflow-x: hidden;
   overflow-y: scroll;
+
   &:focus {
     outline: 0 !important;
   }

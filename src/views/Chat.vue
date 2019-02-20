@@ -1,17 +1,19 @@
 <template>
   <div class="chat">
-    <div class="columns is-full-height">
-      <div class="column is-3 is-sidebar-menu">
-        <contacts-menu></contacts-menu>
-      </div>
-      <div class="column">
-        <div class="messages-header">
-          Hello world
+    <div class="contacts">
+      <contacts-menu></contacts-menu>
+    </div>
+
+      <div class="messages">
+        <div class="messages-header" v-if="selectedTopic.topic" >
+          <p>{{selectedTopic.public.fn}}</p>
         </div>
-          <messages-list-view></messages-list-view>
+        
+        <div class="messages-list-view">
+            <messages-list-view></messages-list-view>
+        </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
@@ -24,7 +26,11 @@ export default {
   name: "Chat",
   props: {},
   components: { ContactsMenu, MessagesListView },
-  computed: {},
+  computed: {
+    selectedTopic() {
+      return store.getters.selectedTopic;
+    }
+  },
   mounted() {
     var tinodeClient = store.state.client.tinodeClient;
     if (!tinodeClient.isAuthenticated()) {
@@ -48,11 +54,44 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .chat {
-  margin: 15px;
+  background-color: $grey-darker;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+
+  .messages {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .messages-header {
+      height: 35px;
+      width: 97%;
+      background-color: $accent;
+
+      p {
+        text-align: left;
+        margin-left: 5px;
+        color: white;
+        margin-top: 3px;
+      }
+    }
+
+    .messages-list-view {
+      width: 100%;
+    }
+  }
+  .contacts {
+    width: 18em;
+  }
 }
-.messages-header {
-  border: 1px solid black;
-  height: 35px;
-  background-color: $accent;
+.box-shadow {
+  -webkit-box-shadow: 0 8px 5px -7px black;
+  -moz-box-shadow: 0 8px 5px -7px black;
+  box-shadow: 0 8px 6px -7px black;
 }
 </style>
