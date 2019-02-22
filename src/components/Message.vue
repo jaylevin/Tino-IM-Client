@@ -22,7 +22,7 @@
 							</a>
 						</div> -->
 				    {{ fromFN }}
-						<small class="timestamp">  {{ ts }} </small>
+						<small class="timestamp">  {{ tsFormatted }} </small>
 				  </div>
 				  <div class="content">
 				    {{ content }}
@@ -61,6 +61,9 @@ export default {
     }
   },
   computed: {
+    tsFormatted() {
+      return new Date(this.ts).toLocaleTimeString();
+    },
     isIncoming() {
       let clientID = store.state.client.tinodeClient.getCurrentUserID();
       if (clientID == this.from) {

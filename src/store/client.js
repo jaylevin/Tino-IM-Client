@@ -47,14 +47,21 @@ export default {
           me.onMeta = function(meta) {
             console.log("Received me.onMeta:", meta);
             if (meta.sub) {
-              var subs = [];
-
               meta.sub.forEach(sub => {
-                sub.isOnline = false;
-                subs.push(sub);
+                let topic = state.tinodeClient.getTopic(sub.topic);
+                topic.subscribe().then(() => {
+                  topic.getMessagesPage(20, true).then(ctrl => {
+                    console.log("get messages page ctrl obj:", ctrl);
+                  });
+                });
               });
 
-              store.dispatch("setContactsList", subs);
+              var keys = Object.keys(me._contacts);
+
+              var topicsArray = keys.map(function(v) {
+                return me._contacts[v];
+              });
+              store.dispatch("setContactsList", topicsArray);
             }
           };
 
@@ -80,20 +87,25 @@ export default {
           // };
 
           me.onPres = function(pres) {
-            console.log("Presence msg:", pres);
+            console.log("Received Presence msg:", pres);
             let contact = store.getters.contacts.find(c => {
               return c.topic == pres.src;
             });
             if (contact) {
               if (pres.topic == "me") {
                 switch (pres.what) {
-                  case "on" || "off":
-                    if (contact) {
-                      store.dispatch("updateTopicPresence", {
-                        topicID: pres.src,
-                        presence: pres.what == "on" ? true : false
-                      });
-                    }
+                  case "on":
+                    store.dispatch("updateTopicPresence", {
+                      topicID: pres.src,
+                      presence: true
+                    });
+
+                    break;
+                  case "off":
+                    store.dispatch("updateTopicPresence", {
+                      topicID: pres.src,
+                      presence: false
+                    });
                     break;
 
                   case "msg":

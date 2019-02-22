@@ -36,10 +36,15 @@ export default {
       });
     },
 
-    addContact(state, topic) {
-      state.contacts.push(topic);
-      topic = store.getters.getTopic(topic.user);
-      topic.subscribe().then(() => {});
+    addContact(state, topicID) {
+      let topic = store.getters.getTopic(topicID);
+
+      topic.subscribe({ what: "desc" }).then(ctrl => {
+        console.log("sub request successful:", ctrl);
+        // topic.getMeta({ what: "desc" }).then(ctrl => {
+        //   console.log("Got meta:", ctrl);
+        // });
+      });
     },
 
     removeContact(state, topicID) {
@@ -84,12 +89,12 @@ export default {
         payload.presence
       );
 
-      let contact = state.contacts.find(c => {
-        return c.topic == payload.topicID;
-      });
-      if (contact) {
-        contact.isOnline = payload.presence;
-      }
+      // let contact = state.contacts.find(c => {
+      //   return c.topic == payload.topicID;
+      // });
+      // if (contact) {
+      //   contact.online = payload.presence;
+      // }
     },
     selectTopic(state, topic) {
       console.log("Selecting topic", topic);
@@ -101,12 +106,14 @@ export default {
     searchForTopic(context, query) {
       context.commit("searchForTopic", query);
     },
-    addContact(context, topic) {
-      context.commit("addContact", topic);
+    addContact(context, topicID) {
+      context.commit("addContact", topicID);
     },
     selectTopic(context, topic) {
-      console.log("Selecting topic action:", topic);
       context.commit("selectTopic", topic);
+      if (topic != undefined) {
+        context.commit("renderMessages");
+      }
     },
     removeContact(context, topicID) {
       context.commit("removeContact", topicID);
@@ -121,7 +128,6 @@ export default {
       context.commit("setContactsList", contacts);
     },
     updateTopicPresence(context, payload) {
-      console.log("Updating topic presence:", payload);
       context.commit("updateTopicPresence", payload);
     }
   }, // END of actions

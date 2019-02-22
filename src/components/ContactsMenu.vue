@@ -1,7 +1,7 @@
 <template>
   <div class="contacts">
     <div class="contacts-header">
-      <div class="header-text">
+      <div @click="selectTopic(undefined)" class="header-text">
         Messages
       </div>
       <div class="plus-button">
@@ -10,7 +10,7 @@
     </div>
 
 
-    <div id="scrollbar" class="contacts" v-if="addContactForm.isVisible">
+    <div class="addContacts" v-if="addContactForm.isVisible">
       <div class="form-popup" id="addContactForm">
         <form submit.prevent="" class="form-container">
 
@@ -43,33 +43,9 @@
     </div>
 
     <div class="contacts-list-view">
-      <ul class="contacts-list" v-for="contact in contacts" v-if="contacts.length > 0">
-        <li @click="selectTopic(contact)":class="{'is-active': selectedTopic.topic == contact.topic }">
-          <a>
-
-            <div class="contact">
-                <div class="contact-avatar">
-                    <figure class="image is-32x32"><img class="is-rounded"
-                      :src="contact.public.photo.data">
-                    </figure>
-                 </div>
-
-                <div>
-                    <p class="contact-name">
-                      {{contact.public.fn}}
-                    </p>
-                </div>
-
-                <div class="contact-right">
-                  <div v-if="contact.isOnline" class="contact-presence">
-                      <span>&#183;</span>
-                  </div>
-                  <div @click.prevent.stop="contactEllipsisClicked($event, contact)" class="contact-ellipsis">
-                      <span>&#8942;</span>
-                  </div>
-              </div>
-            </div>
-          </a>
+      <ul class="contacts-list" v-if="contacts.length > 0">
+        <li v-for="topic in contacts" @click="selectTopic(topic)":class="{'is-active': selectedTopic.topic == topic.topic }">
+          <a><topic :topic="topic"></topic></a>
         </li>
       </ul>
     </div>
@@ -79,9 +55,9 @@
 
 <script>
 import store from "@/store/store.js";
-
+import Topic from "@/components/Topic.vue";
 export default {
-  components: {},
+  components: { Topic },
 
   computed: {
     addContactForm() {
@@ -91,6 +67,10 @@ export default {
       return store.getters.selectedTopic;
     },
     contacts() {
+      // sort by most recent topic activity
+      store.getters.contacts.sort((a, b) => {
+        return new Date(b.touched) - new Date(a.touched);
+      });
       return store.getters.contacts;
     }
   },
@@ -100,38 +80,22 @@ export default {
       store.dispatch("toggleAddContactForm", !this.addContactForm.isVisible);
     },
     addContact(topic) {
-      store.dispatch("addContact", topic);
+      let topicToAdd = store.state.client.tinodeClient.getTopic(topic.user);
+      console.log("Topic to add:", topicToAdd);
+      store.dispatch("addContact", topic.user);
     },
 
     // User clicks on a contact in their contacts list
     selectTopic(topic) {
-      let topicObj = store.getters.getTopic(topic.topic);
-      let client = store.state.client.$tinodeClient;
-
-      if (topicObj != store.getters.selectedTopic) {
-        console.log(topicObj, "!=", store.getters.selectedTopic);
-        console.log("topic obj subscribed:", topicObj.isSubscribed());
-        if (topicObj.isSubscribed()) {
-          store.state.client.tinodeClient
-            .leave(store.getters.selectedTopic.topic)
-            .then(() => {});
-        }
-        topicObj.subscribe().then(ctrl => {
-          if (ctrl.code == 200) {
-            store.dispatch("selectTopic", topicObj);
-
-            topicObj
-              .getMessagesPage(20, true)
-              .then(ctrl => {
-                console.log("get messages page ctrl obj:", ctrl);
-              })
-              .then(() => {
-                store.dispatch("renderMessages");
-              });
-          }
-        });
-      } else {
-        console.log("Topic already selected");
+      if (topic == undefined) {
+        store.dispatch("selectTopic", topic);
+      } else if (topic) {
+        let client = store.state.client.tinodeClient;
+        let newTopic = client.getTopic(topic.topic);
+        let oldTopic = store.getters.getTopic(
+          store.getters.selectedTopic.topic
+        );
+        store.dispatch("selectTopic", newTopic);
       }
     },
 
@@ -165,20 +129,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#scrollbar::-webkit-scrollbar {
-  width: 12px;
+.divider {
+  margin-top: 5px;
+}
+li.is-active {
   background-color: $grey-darker;
+  border-radius: 5px;
+  top: 3px;
+  position: relative;
 }
-#scrollbar::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  background-color: $grey-darker;
-}
-#scrollbar::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: $grey-dark;
-}
+
 .menu-label {
   color: $accent;
 }
@@ -186,8 +146,9 @@ export default {
   -webkit-box-shadow: 1px 0px 0px 0px $grey-dark;
   -moz-box-shadow: 1px 0px 0px 0px $grey-dark;
   box-shadow: 1px 0px 0px 0px $grey-dark;
+  background: rgba(54, 54, 54, 0.5);
   min-height: 25px;
-  height: 80vh;
+  height: 100%;
   flex-direction: column;
   padding: 8px;
   overflow-y: scroll;
@@ -206,65 +167,6 @@ export default {
       align-self: center;
     }
   }
-}
-
-li.is-active {
-  background-color: $grey-dark;
-  color: $grey-darker;
-}
-
-.contact {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #dbe7f9;
-  margin-top: 6px;
-
-  :hover {
-    color: $accent;
-  }
-
-  .contact-right {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-
-    .contact-presence {
-      color: #7df442;
-      margin-right: 15px;
-      font-weight: bold;
-      font-size: 2em;
-    }
-
-    .contact-ellipsis {
-      font-size: 1.5em;
-      :hover {
-        color: $grey-dark;
-      }
-      :active {
-        color: $accent;
-      }
-    }
-  }
-  .contact-name {
-    margin-left: 5px;
-  }
-
-  .contact-avatar {
-    margin-left: 5px;
-    margin-top: 5px;
-    align-self: flex-end;
-    margin-right: 3px;
-  }
-}
-
-figure {
-  display: inline-block;
-  margin: 0px;
-}
-
-.contacts {
-  background: rgba(54, 54, 54, 0.5);
 }
 
 /* Popup add-contact form */

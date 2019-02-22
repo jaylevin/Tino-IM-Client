@@ -36,7 +36,7 @@
 
         <div class="send-button">
           <div class="control">
-            <a @click="sendMessage(messageInput)" class="button is-info">
+            <a @click="sendMessage()" class="button is-info">
               Send
             </a>
           </div>
@@ -75,23 +75,12 @@ export default {
   },
   computed: {
     messages() {
-      return store.getters.messages;
+      let selectedTopicID = store.getters.selectedTopic.topic;
+      return store.getters.getMessagesByTopic(selectedTopicID);
     },
 
     selectedTopic() {
       return store.getters.selectedTopic;
-    },
-
-    userDetailsDrawerToggled() {
-      return store.getters.userDetailsDrawerToggled;
-    }
-  },
-  watchers: {
-    messages(oldMsgs, newMsgs) {
-      console.log("newMsgs:", newMsgs);
-    },
-    selectedTopic(old, newT) {
-      console.log("Selected new topic:", newT);
     }
   },
   mounted() {
@@ -110,26 +99,18 @@ export default {
     toggleUserDetailsDrawer(status) {
       console.log("Toggling");
       store.dispatch("toggleUserDetailsDrawer", status);
+    },
+    sendMessage() {
+      if (this.messageInput) {
+        store.dispatch("publishMessage", this.messageInput);
+        this.messageInput = "";
+      }
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
-#messages::-webkit-scrollbar {
-  width: 12px;
-  background-color: $grey-darker;
-}
-#messages::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  background-color: $grey-darker;
-}
-#messages::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: $grey-dark;
-}
 .messages-view {
   padding: 8px;
   margin: 5px;
@@ -179,7 +160,20 @@ textarea::placeholder {
     outline: 0 !important;
   }
 }
-
+#messages::-webkit-scrollbar {
+  width: 12px;
+  background-color: $grey-darker;
+}
+#messages::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: $grey-darker;
+}
+#messages::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: $grey-dark;
+}
 .delete-btn {
   float: left;
   margin-right: 5px;

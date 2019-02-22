@@ -5,10 +5,10 @@
     </div>
 
       <div class="messages">
-        <div class="messages-header" v-if="selectedTopic.topic" >
+        <div class="messages-header box-shadow" v-if="selectedTopic.topic" >
           <p>{{selectedTopic.public.fn}}</p>
         </div>
-        
+
         <div class="messages-list-view">
             <messages-list-view></messages-list-view>
         </div>
@@ -54,13 +54,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .chat {
+  margin: 2%;
   background-color: $grey-darker;
   display: flex;
   justify-content: center;
   height: 100%;
-  margin-top: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
 
   .messages {
     width: 100%;
@@ -72,6 +70,7 @@ export default {
       height: 35px;
       width: 97%;
       background-color: $accent;
+      margin-top: 6px;
 
       p {
         text-align: left;
