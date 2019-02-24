@@ -1,11 +1,11 @@
 <template>
   <div class="chat">
     <div class="contacts">
-      <contacts-menu></contacts-menu>
+      <contacts-list-view></contacts-list-view>
     </div>
 
       <div class="messages">
-        <div class="messages-header box-shadow" v-if="selectedTopic.topic" >
+        <div class="messages-header box-shadow" v-if="selectedTopic.topic">
           <p>{{selectedTopic.public.fn}}</p>
         </div>
 
@@ -19,13 +19,13 @@
 <script>
 import store from "@/store/store.js";
 import router from "@/router.js";
-import ContactsMenu from "@/components/ContactsMenu.vue";
+import ContactsListView from "@/components/ContactsListView.vue";
 import MessagesListView from "@/components/MessagesListView.vue";
 
 export default {
   name: "Chat",
   props: {},
-  components: { ContactsMenu, MessagesListView },
+  components: { ContactsListView, MessagesListView },
   computed: {
     selectedTopic() {
       return store.getters.selectedTopic;

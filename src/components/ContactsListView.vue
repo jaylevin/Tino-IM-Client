@@ -58,7 +58,7 @@ import store from "@/store/store.js";
 import Topic from "@/components/Topic.vue";
 export default {
   components: { Topic },
-
+  name: "ContactsListView",
   computed: {
     addContactForm() {
       return store.getters.addContactForm;
