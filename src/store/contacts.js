@@ -89,12 +89,12 @@ export default {
         payload.presence
       );
 
-      // let contact = state.contacts.find(c => {
-      //   return c.topic == payload.topicID;
-      // });
-      // if (contact) {
-      //   contact.online = payload.presence;
-      // }
+      let contact = state.contacts.find(c => {
+        return c.topic == payload.topicID;
+      });
+      if (contact) {
+        contact.online = payload.presence;
+      }
     },
     selectTopic(state, topic) {
       console.log("Selecting topic", topic);
@@ -112,7 +112,7 @@ export default {
     selectTopic(context, topic) {
       context.commit("selectTopic", topic);
       if (topic != undefined) {
-        context.commit("renderMessages");
+        context.commit("setCurrentMessages");
       }
     },
     removeContact(context, topicID) {

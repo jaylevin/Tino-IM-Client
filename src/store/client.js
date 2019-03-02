@@ -44,6 +44,7 @@ export default {
           // Logged in fine, attach callbacks, subscribe to 'me'.
           var me = state.tinodeClient.getMeTopic();
           var fnd = state.tinodeClient.getFndTopic();
+
           me.onMeta = function(meta) {
             console.log("Received me.onMeta:", meta);
             if (meta.sub) {
@@ -66,7 +67,7 @@ export default {
           };
 
           client.onDataMessage = function(data) {
-            console.log("Received data:", data);
+            console.log("{data} message received:", data);
             store.dispatch("storeMessage", data);
           };
 
@@ -80,7 +81,6 @@ export default {
                 });
               }
             }
-            router.push("chat");
           };
           // client.onDataMessage = function(data) {
           //   console.log("Received data msg:", data);
@@ -121,7 +121,7 @@ export default {
           };
 
           fnd.onMeta = function(meta) {
-            console.log("fnd.onMeta triggered:", meta.sub);
+            console.log("fnd.onMeta triggered:", meta);
             store.dispatch("setSearchResults", meta.sub);
           };
 

@@ -75,8 +75,8 @@ export default {
   },
   computed: {
     messages() {
-      let selectedTopicID = store.getters.selectedTopic.topic;
-      return store.getters.getMessagesByTopic(selectedTopicID);
+      console.log("Computing messages:", store.getters.messages);
+      return store.getters.messages;
     },
 
     selectedTopic() {
@@ -96,12 +96,9 @@ export default {
     }
   },
   methods: {
-    toggleUserDetailsDrawer(status) {
-      console.log("Toggling");
-      store.dispatch("toggleUserDetailsDrawer", status);
-    },
     sendMessage() {
       if (this.messageInput) {
+        console.log("Storing message");
         store.dispatch("publishMessage", this.messageInput);
         this.messageInput = "";
       }
