@@ -39,12 +39,15 @@ export default {
     addContact(state, topicID) {
       let topic = store.getters.getTopic(topicID);
 
-      topic.subscribe({ what: "desc" }).then(ctrl => {
-        console.log("sub request successful:", ctrl);
-        // topic.getMeta({ what: "desc" }).then(ctrl => {
-        //   console.log("Got meta:", ctrl);
-        // });
-      });
+      topic
+        .subscribe()
+        .then(ctrl => {
+          console.log("sub request successful:", ctrl);
+          topic.getMeta({ what: "desc" });
+        })
+        .then(ctrl => {
+          state.contacts.push(topic);
+        });
     },
 
     removeContact(state, topicID) {

@@ -12,10 +12,17 @@ export default {
   mutations: {
     storeMessage(state, message) {
       let messagesCache = state.messagesCache.get(message.topic);
+
       if (!messagesCache) {
         // initialize new array of messages at map location state.messagesCache[topicID]
         console.log("storing message in new messagesCache:", message);
         state.messagesCache.set(message.topic, new Array(message));
+        if (
+          message.from == store.state.client.tinodeClient.getCurrentUserID()
+        ) {
+          // outgoing message can be handled differently.
+          state.currentMessages = state.messagesCache.get(message.topic);
+        }
       } else {
         // append message to existing messagesCache array
         console.log("appending message to existing cache:", message);
@@ -35,7 +42,6 @@ export default {
       selectedTopic.publishMessage(msg).then(ctrl => {
         console.log("publish msg ctrl:", ctrl);
       });
-      // store.dispatch("storeMessage", msg);
     }
   }, // END of mutations
 

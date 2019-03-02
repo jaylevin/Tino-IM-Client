@@ -68,9 +68,8 @@ export default {
 
     .messages-header {
       height: 35px;
-      width: 97%;
+      width: 99.33%;
       background-color: $accent;
-      margin-top: 6px;
 
       p {
         text-align: left;

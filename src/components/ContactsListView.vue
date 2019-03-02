@@ -12,7 +12,6 @@
 
     <div class="addContacts" v-if="addContactForm.isVisible">
       <div class="form-popup" id="addContactForm">
-        <form submit.prevent="" class="form-container">
 
           <label for="email"><b>Enter a name or email:</b></label>
           <input class="input" type="text" v-model="addContactForm.searchQuery" required>
@@ -22,7 +21,7 @@
             <h1>Search Results</h1>
             <div class="divider"></div>
             <li v-for="result in addContactForm.searchResults">
-              <a class="search-result" @click="addContact(result)">
+              <a @click="addContact(result)" class="search-result">
                 <div>
                   <figure class="image is-32x32">
                     <img class="is-rounded" :src="result.public.photo.data">
@@ -37,14 +36,13 @@
           <!-- End of Search Results -->
 
           <button @click="searchForContact" class="button is-success submit">Submit</button>
-        </form>
             <div class="divider"></div>
       </div>
     </div>
 
     <div class="contacts-list-view">
       <ul class="contacts-list" v-if="contacts.length > 0">
-        <li v-for="topic in contacts" @click="selectTopic(topic)":class="{'is-active': selectedTopic.topic == topic.topic }">
+        <li v-for="topic in contacts" @click="selectTopic(topic)" :class="{'is-active': selectedTopic.topic == topic.topic }">
           <a><topic :topic="topic"></topic></a>
         </li>
       </ul>
@@ -68,9 +66,9 @@ export default {
     },
     contacts() {
       // sort by most recent topic activity
-      store.getters.contacts.sort((a, b) => {
-        return new Date(b.touched) - new Date(a.touched);
-      });
+      // store.getters.contacts.sort((a, b) => {
+      //   return new Date(b.touched) - new Date(a.touched);
+      // });
       return store.getters.contacts;
     }
   },
@@ -80,8 +78,7 @@ export default {
       store.dispatch("toggleAddContactForm", !this.addContactForm.isVisible);
     },
     addContact(topic) {
-      let topicToAdd = store.state.client.tinodeClient.getTopic(topic.user);
-      console.log("Topic to add:", topicToAdd);
+      let topicToAdd = store.state.client.tinodeClient.getTopic(topic.topic);
       store.dispatch("addContact", topic.user);
     },
 
@@ -91,10 +88,8 @@ export default {
         store.dispatch("selectTopic", topic);
       } else if (topic) {
         let client = store.state.client.tinodeClient;
+        console.log("Attempting to select topic:", topic);
         let newTopic = client.getTopic(topic.topic);
-        let oldTopic = store.getters.getTopic(
-          store.getters.selectedTopic.topic
-        );
         store.dispatch("selectTopic", newTopic);
       }
     },

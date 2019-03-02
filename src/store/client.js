@@ -28,6 +28,7 @@ export default {
   mutations: {
     // Login
     authenticate(state, request) {
+      state = defaultState();
       let client = state.tinodeClient;
       client
         .connect()
@@ -70,6 +71,12 @@ export default {
             console.log("{data} message received:", data);
             store.dispatch("storeMessage", data);
           };
+          client.onMeta = function(meta) {
+            console.log("{meta} message received:", meta);
+          };
+          client.onMetaDesc = function(meta) {
+            console.log("{meta desc} message received:", meta);
+          };
 
           me.onMetaDesc = function(meta) {
             console.log("Received topic metadata update: ", meta);
@@ -82,9 +89,6 @@ export default {
               }
             }
           };
-          // client.onDataMessage = function(data) {
-          //   console.log("Received data msg:", data);
-          // };
 
           me.onPres = function(pres) {
             console.log("Received Presence msg:", pres);
