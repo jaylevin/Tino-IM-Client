@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import messagesStore from "./messages.js";
-import clientStore from "./client.js";
-import contactsStore from "./contacts.js";
+import messagesStore from "./modules/messages.js";
+import clientStore from "./modules/client.js";
+import contactsStore from "./modules/contacts.js";
 
 Vue.use(Vuex);
 

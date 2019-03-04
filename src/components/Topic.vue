@@ -1,24 +1,27 @@
 <template>
     <div class="contact">
         <div class="contact-avatar">
-            <figure class="image is-32x32"><img class="is-rounded"
+          <p class="no-select">
+            <figure v-if="topic.public" class="no-select image is-32x32"><img class="is-rounded"
               :src="topic.public.photo.data">
             </figure>
+          </p>
          </div>
 
         <div>
-            <p class="contact-name">
+            <p v-if="topic.public" class="no-select contact-name">
               {{topic.public.fn}}
             </p>
         </div>
 
         <div class="contact-right">
-          <div v-if="topic.online" class="contact-presence">
+          <div v-if="topic.online === true" class="contact-presence">
               <span>&#183;</span>
           </div>
+
           <!-- Last message time stamp -->
           <div class="last-touched">
-            <p>{{ new Date(lastTouched).toLocaleTimeString() }}</p>
+            <p class="no-select">{{ new Date(lastTouched).toLocaleTimeString() }}</p>
           </div>
 
       </div>
@@ -35,6 +38,9 @@ export default {
   created() {
     console.log(this.topic);
   },
+  mounted() {
+    console.log("mounteD");
+  },
   methods: {},
   computed: {
     lastTouched() {
@@ -48,6 +54,13 @@ export default {
 </script>
 
 <style lang="scss">
+// p {
+//   -webkit-user-select: text;
+//   -khtml-user-select: text;
+//   -moz-user-select: text;
+//   -o-user-select: text;
+//   user-select: text;
+// }
 .contact {
   display: flex;
   justify-content: center;

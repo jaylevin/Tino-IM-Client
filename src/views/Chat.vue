@@ -5,7 +5,7 @@
     </div>
 
       <div class="messages">
-        <div class="messages-header box-shadow" v-if="selectedTopic.topic">
+        <div class="messages-header box-shadow" v-if="selectedTopicID">
           <p>{{selectedTopic.public.fn}}</p>
         </div>
 
@@ -27,8 +27,11 @@ export default {
   props: {},
   components: { ContactsListView, MessagesListView },
   computed: {
+    selectedTopicID() {
+      return store.getters.selectedTopicID;
+    },
     selectedTopic() {
-      return store.getters.selectedTopic;
+      return store.getters.getTopic(this.selectedTopicID);
     }
   },
   mounted() {

@@ -4,7 +4,7 @@ import axios from "axios";
 export function defaultState() {
   return {
     contacts: [],
-    selectedTopic: {},
+    selectedTopicID: "",
     addContactForm: {
       searchQuery: "",
       searchResults: [],
@@ -38,16 +38,19 @@ export default {
 
     addContact(state, topicID) {
       let topic = store.getters.getTopic(topicID);
-
-      topic
-        .subscribe()
-        .then(ctrl => {
-          console.log("sub request successful:", ctrl);
-          topic.getMeta({ what: "desc" });
-        })
-        .then(ctrl => {
-          state.contacts.push(topic);
-        });
+      if (!topic.isSubscribed()) {
+        topic
+          .subscribe()
+          .then(ctrl => {
+            console.log("sub request successful:", ctrl);
+            topic.getMeta({ what: "desc" });
+          })
+          .then(ctrl => {
+            state.contacts.push(topic);
+          });
+      } else {
+        console.log("contact is already in contacts list.");
+      }
     },
 
     removeContact(state, topicID) {
@@ -83,6 +86,7 @@ export default {
       state.addContactForm.isVisible = status;
     },
     setContactsList(state, contacts) {
+      console.log("state.contacts = ", contacts);
       state.contacts = contacts;
     },
     updateTopicPresence(state, payload) {
@@ -99,9 +103,9 @@ export default {
         contact.online = payload.presence;
       }
     },
-    selectTopic(state, topic) {
-      console.log("Selecting topic", topic);
-      state.selectedTopic = topic;
+    selectTopic(state, topicID) {
+      console.log("Selecting topic", topicID);
+      state.selectedTopicID = topicID;
     }
   }, // END of mutations
 
@@ -139,8 +143,8 @@ export default {
     contacts(state) {
       return state.contacts;
     },
-    selectedTopic(state) {
-      return state.selectedTopic;
+    selectedTopicID(state) {
+      return state.selectedTopicID;
     },
     addContactForm(state) {
       return state.addContactForm;

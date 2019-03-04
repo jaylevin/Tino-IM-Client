@@ -3,7 +3,7 @@
 
       <div class="list-view">
         <ul id="messages" tabindex="1" class="messages-ul">
-            <message v-for="message in messages"
+            <message class="no-select" v-for="message in messages"
                      :from="message.from"
                      :ts="message.ts"
                      :content="message.content"
@@ -61,13 +61,10 @@
 <script>
 import Message from "@/components/Message.vue";
 import store from "@/store/store.js";
-import { mapGetters } from "vuex";
 
 export default {
   name: "MessagesListView",
-  components: {
-    Message
-  },
+  components: { Message },
   data() {
     return {
       messageInput: ""
@@ -77,10 +74,6 @@ export default {
     messages() {
       console.log("Computing messages:", store.getters.messages);
       return store.getters.messages;
-    },
-
-    selectedTopic() {
-      return store.getters.selectedTopic;
     }
   },
   mounted() {

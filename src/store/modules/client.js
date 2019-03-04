@@ -49,21 +49,18 @@ export default {
           me.onMeta = function(meta) {
             console.log("Received me.onMeta:", meta);
             if (meta.sub) {
+              let contactsList = [];
               meta.sub.forEach(sub => {
                 let topic = state.tinodeClient.getTopic(sub.topic);
                 topic.subscribe().then(() => {
                   topic.getMessagesPage(20, true).then(ctrl => {
                     console.log("get messages page ctrl obj:", ctrl);
+                    contactsList.push(topic);
                   });
                 });
               });
 
-              var keys = Object.keys(me._contacts);
-
-              var topicsArray = keys.map(function(v) {
-                return me._contacts[v];
-              });
-              store.dispatch("setContactsList", topicsArray);
+              store.dispatch("setContactsList", contactsList);
             }
           };
 
@@ -150,20 +147,26 @@ export default {
 
     // Register a new account
     register(state, payload) {
+      let secret = btoa(payload.username + ":" + payload.password);
+      let accParams = {
+        public: {
+          fn: payload.displayName,
+          photo: {
+            data: payload.avatarData,
+            type: "png"
+          }
+        },
+        tags: [payload.email, payload.username]
+      };
+
       state.tinodeClient.connect().then(() => {
         return state.tinodeClient
-          .createAccountBasic(payload.username, payload.password, {
-            public: {
-              fn: payload.displayName,
-              photo: {
-                data: payload.avatarData,
-                type: "png"
-              }
-            },
-            tags: [payload.email, payload.username]
-          })
-          .then(data => {
-            console.log("Account registration successful:", data);
+          .createAccount("basic", secret, false, accParams)
+          .then(ctrl => {
+            if (ctrl.code == 201) {
+              console.log("Account registration successful:", ctrl);
+              router.push("login");
+            }
           })
           .catch(err => {
             console.log(err);

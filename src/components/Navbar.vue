@@ -35,11 +35,11 @@
           <div class="userInfo" v-if="isAuthenticated">
 
             <div class="avatar image is-32x32">
-              <img class="is-rounded" :src="avatar.data">
+              <img class="is-rounded" :src="profile.avatar.data">
             </div>
 
             <div class="displayName">
-              <span style="color:#00a1ff">{{ displayName }}</span>
+              <span style="color:#00a1ff">{{ profile.displayName }}</span>
             </div>
 
             <div class="userID">
@@ -84,11 +84,8 @@ export default {
     userID() {
       return store.state.client.tinodeClient.getCurrentUserID();
     },
-    displayName() {
-      return store.getters.profile.displayName;
-    },
-    avatar() {
-      return store.getters.profile.avatar;
+    profile() {
+      return store.getters.profile;
     }
   },
   methods: {

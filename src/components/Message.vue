@@ -13,19 +13,11 @@
 				    <img class="is-rounded" :src="avatarURI" v-model="avatarURI">
 				</figure>
 					<div class="message-head">
-						 <!-- <div class="delete-msg" v-if="isDeleting">
-							<a :class="{'is-outlined': !msg.markedToDel}" @click="msg.markToDel()" class="button is-danger">
-							  <span>Delete</span>
-								<span class="icon is-small">
-									<i class="fas fa-times"></i>
-								</span>
-							</a>
-						</div> -->
 				    {{ fromFN }}
-						<small class="timestamp">  {{ tsFormatted }} </small>
 				  </div>
 				  <div class="content">
 				    {{ content }}
+												<br/><small class="timestamp">  {{ tsFormatted }} </small>
 				  </div>
 			</div>
 		</div>
@@ -98,15 +90,15 @@ export default {
 <style lang="scss">
 .msg {
   radius: 50px;
-  padding: 15px;
-  margin: 15px;
-  margin-bottom: 15px;
+  padding: 5px;
+  margin: 5px;
+  margin-bottom: 5px;
   text-align: left;
   radius: 5px;
 
   .content {
     color: white;
-    margin-left: 65px;
+    margin-left: 10px;
     padding-top: 8px;
     padding-bottom: 8px;
     padding-left: 8px;
@@ -121,12 +113,13 @@ export default {
     margin-right: 10px;
   }
   .message-head {
-    margin-left: 65px;
+    margin-left: 15px;
     background-color: rgba(0, 0, 0, 0.5);
-    padding: 8px;
+    padding: 3px;
     color: red;
     .timestamp {
       float: right;
+      font-size: 0.5em;
     }
   }
 }

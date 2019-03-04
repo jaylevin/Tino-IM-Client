@@ -1,5 +1,5 @@
 <template>
-  <div class="contacts">
+  <div class="contacts" id="contacts">
     <div class="contacts-header">
       <div @click="selectTopic(undefined)" class="header-text">
         Messages
@@ -42,8 +42,10 @@
 
     <div class="contacts-list-view">
       <ul class="contacts-list" v-if="contacts.length > 0">
-        <li v-for="topic in contacts" @click="selectTopic(topic)" :class="{'is-active': selectedTopic.topic == topic.topic }">
-          <a><topic :topic="topic"></topic></a>
+        <li v-for="topic in contacts" @click="selectTopic(topic.name)" :class="{'is-active': selectedTopicID == topic.name }">
+          <a>
+            <topic :topic="topic"></topic>
+          </a>
         </li>
       </ul>
     </div>
@@ -61,14 +63,14 @@ export default {
     addContactForm() {
       return store.getters.addContactForm;
     },
-    selectedTopic() {
-      return store.getters.selectedTopic;
+    selectedTopicID() {
+      return store.getters.selectedTopicID;
     },
     contacts() {
       // sort by most recent topic activity
-      // store.getters.contacts.sort((a, b) => {
-      //   return new Date(b.touched) - new Date(a.touched);
-      // });
+      store.getters.contacts.sort((a, b) => {
+        return new Date(b.touched) - new Date(a.touched);
+      });
       return store.getters.contacts;
     }
   },
@@ -83,15 +85,9 @@ export default {
     },
 
     // User clicks on a contact in their contacts list
-    selectTopic(topic) {
-      if (topic == undefined) {
-        store.dispatch("selectTopic", topic);
-      } else if (topic) {
-        let client = store.state.client.tinodeClient;
-        console.log("Attempting to select topic:", topic);
-        let newTopic = client.getTopic(topic.topic);
-        store.dispatch("selectTopic", newTopic);
-      }
+    selectTopic(topicID) {
+      console.log("Attempting to select topic:", topicID);
+      store.dispatch("selectTopic", topicID);
     },
 
     searchForContact() {
@@ -136,6 +132,20 @@ li.is-active {
 
 .menu-label {
   color: $accent;
+}
+#contacts::-webkit-scrollbar {
+  width: 12px;
+  background-color: $grey-darker;
+}
+#contacts::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background-color: $grey-darker;
+}
+#contacts::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: $grey-dark;
 }
 .contacts {
   -webkit-box-shadow: 1px 0px 0px 0px $grey-dark;
