@@ -145,6 +145,7 @@ export default {
     },
     logout(state) {
       state.tinodeClient.disconnect();
+      state.tinodeClient = tinode.newClient()
       router.push("");
     },
 

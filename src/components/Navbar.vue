@@ -14,7 +14,7 @@
       <div class="navbar-start">
         <a class="navbar-item"  @click="tab = 'home'">
           <router-link v-if="!isAuthenticated" :to="{ name: 'landing' }">Home</router-link>
-          <router-link v-else :to="{ name: 'chat' }">Home</router-link>
+          <router-link v-else :to="{ name: 'chat' }">Chat</router-link>
         </a>
         <a class="navbar-item" @click="tab = 'discover'">
           <router-link :to="{ name: 'discover' }">Discover</router-link>
@@ -25,7 +25,6 @@
         <a class="navbar-item" v-if="isAuthenticated" @click="tab = 'dashboard'">
           <router-link :to="{ name: 'dashboard' }">My Dashboard</router-link>
         </a>
-
       </div>
 
 

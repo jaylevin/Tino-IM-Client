@@ -7,7 +7,6 @@ import router from "./router.js";
 
 export function NewClient() {
   let client = new Tinode(APP_NAME, HOST, API_KEY, null, false);
-  client.contacts = {};
 
   client.enableLogging(true);
   client.onDisconnect = function() {
