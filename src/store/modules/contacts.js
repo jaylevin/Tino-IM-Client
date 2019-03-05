@@ -3,18 +3,20 @@ import axios from "axios";
 
 export function defaultState() {
   return {
-    contacts: [],
+    contacts: [{}],
     selectedTopicID: "",
+
+    // Add contact form drop down menu in ContactsListView.vue
     addContactForm: {
       searchQuery: "",
-      searchResults: [],
+      searchResults: [{}],
       isVisible: false
     }
   };
 }
 
 export default {
-  state: defaultState,
+  state: defaultState(),
 
   mutations: {
     searchForTopic(state, query) {
@@ -95,13 +97,8 @@ export default {
         payload.topicID,
         payload.presence
       );
-
-      let contact = state.contacts.find(c => {
-        return c.topic == payload.topicID;
-      });
-      if (contact) {
-        contact.online = payload.presence;
-      }
+      let topic = store.state.client.tinodeClient.getTopic(payload.topicID);
+      topic.online = payload.presence;
     },
     selectTopic(state, topicID) {
       console.log("Selecting topic", topicID);

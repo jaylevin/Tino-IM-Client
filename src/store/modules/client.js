@@ -89,36 +89,10 @@ export default {
 
           me.onPres = function(pres) {
             console.log("Received Presence msg:", pres);
-            let contact = store.getters.contacts.find(c => {
-              return c.topic == pres.src;
+            store.dispatch("updateTopicPresence", {
+              topicID: pres.src,
+              presence: pres.what == "on" ? true : false
             });
-            if (contact) {
-              if (pres.topic == "me") {
-                switch (pres.what) {
-                  case "on":
-                    store.dispatch("updateTopicPresence", {
-                      topicID: pres.src,
-                      presence: true
-                    });
-
-                    break;
-                  case "off":
-                    store.dispatch("updateTopicPresence", {
-                      topicID: pres.src,
-                      presence: false
-                    });
-                    break;
-
-                  case "msg":
-                    // presence message for a notification
-                    break;
-                }
-              }
-            } else {
-              console.log(
-                "Received a presence message from someone whom client is not subbed to"
-              );
-            }
           };
 
           fnd.onMeta = function(meta) {
