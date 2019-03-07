@@ -30,13 +30,17 @@
       <div class="send-message">
         <div class="message-input">
           <div class="field has-addons">
-            <textarea rows="1" v-model="messageInput" class="textarea" placeholder="Type something..."></textarea>
+            <textarea rows="1" v-model="messageInput" class="textarea" placeholder="Type something..."
+              @keydown.enter.exact.prevent="sendMessage"
+              @keyup.enter.exact.prevent="sendMessage"
+              @keydown.enter.shift.exact="newline">
+            </textarea>
           </div>
         </div>
 
         <div class="send-button">
           <div class="control">
-            <a @click="sendMessage()" class="button is-info">
+            <a @click="sendMessage" class="button is-info">
               Send
             </a>
           </div>
@@ -91,10 +95,13 @@ export default {
   methods: {
     sendMessage() {
       if (this.messageInput) {
-        console.log("Storing message");
+        console.log("Storing message", this.messageInput );
         store.dispatch("publishMessage", this.messageInput);
         this.messageInput = "";
       }
+    },
+    newline() {
+      this.messageInput += '\n'
     }
   }
 };
