@@ -1,5 +1,5 @@
 var Tinode = require("tinode-sdk");
-const API_KEY = "AQAAAAABAABgdIf4e-qYHGhzx0pBm4tV";
+const API_KEY = process.env.VUE_APP_API_KEY;
 const APP_NAME = "Tinode-IM";
 const HOST = "localhost:6060";
 import * as tinode from "./tinode.js";
