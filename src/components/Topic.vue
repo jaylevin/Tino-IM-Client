@@ -15,7 +15,7 @@
         </div>
 
         <div class="contact-right">
-          <div v-if="topic.online === true" class="contact-presence">
+          <div v-if="topicOnline" class="contact-presence">
               <span>&#183;</span>
           </div>
 
@@ -47,20 +47,13 @@ export default {
       return this.topic.touched;
     },
     topicOnline() {
-      return this.topic.online;
+      return store.state.client.tinodeClient.getTopic(this.topic.topic).online;
     }
   }
 };
 </script>
 
 <style lang="scss">
-// p {
-//   -webkit-user-select: text;
-//   -khtml-user-select: text;
-//   -moz-user-select: text;
-//   -o-user-select: text;
-//   user-select: text;
-// }
 .contact {
   display: flex;
   justify-content: center;
