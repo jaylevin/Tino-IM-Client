@@ -42,7 +42,7 @@
             </div>
 
             <div class="userID">
-              [<span style="color:#00a1ff">{{ userID }}</span>]
+              [<span style="color:#00a1ff">{{ profile.userID }}</span>]
             </div>
 
           </div>
@@ -79,9 +79,6 @@ export default {
   computed: {
     isAuthenticated() {
       return store.state.client.tinodeClient.isAuthenticated();
-    },
-    userID() {
-      return store.state.client.tinodeClient.getCurrentUserID();
     },
     profile() {
       return store.getters.profile;

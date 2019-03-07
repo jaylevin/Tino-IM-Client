@@ -13,7 +13,8 @@ export function defaultState() {
     profile: {
       // wrapper from user.public
       displayName: "", // user.public.fn
-      avatar: {} // user.public.photo
+      avatar: {}, // user.public.photo
+      userID: "" // user.topic
     }
   };
 }
@@ -49,7 +50,6 @@ export default {
                 let topic = state.tinodeClient.getTopic(sub.topic);
                 topic.subscribe().then(() => {
                   topic.getMessagesPage(20, true).then(ctrl => {
-                    console.log("get messages page ctrl obj:", ctrl);
                     contactsList.push(topic);
                   });
                 });
@@ -75,6 +75,7 @@ export default {
             if (meta.name == "me") {
               if (meta.public) {
                 store.dispatch("setProfile", {
+                  userID: store.state.client.tinodeClient.getCurrentUserID(),
                   displayName: meta.public.fn,
                   avatar: meta.public.photo
                 });

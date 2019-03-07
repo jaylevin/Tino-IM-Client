@@ -38,7 +38,9 @@ export default {
       let client = store.state.client.tinodeClient;
       let selectedTopic = client.getTopic(selectedTopicID);
       let msg = selectedTopic.createMessage(message);
-      msg.from = store.state.client.tinodeClient.getCurrentUserID();
+
+      // Message is outgoing, so assign the client's ID to msg.form
+      msg.from = store.getters.profile.userID;
 
       selectedTopic.publishMessage(msg).then(ctrl => {
         console.log("publish msg ctrl:", ctrl);
