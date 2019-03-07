@@ -21,6 +21,7 @@ export default {
           console.log(message.content);
         }
       }
+
       if (!messagesCache) {
         // initialize new array of messages at map location state.messagesCache[topicID]
         console.log("storing message in new messagesCache:", message);
