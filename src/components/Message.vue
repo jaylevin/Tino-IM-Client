@@ -57,7 +57,7 @@ export default {
       return new Date(this.ts).toLocaleTimeString();
     },
     isIncoming() {
-      let clientID = store.state.client.tinodeClient.getCurrentUserID();
+      let clientID = store.getters.profile.userID;
       if (clientID == this.from) {
         return true;
       } else {
