@@ -8,7 +8,7 @@ function defaultState() {
 }
 
 export default {
-  state: defaultState,
+  state: defaultState(),
 
   mutations: {
     storeMessage(state, message) {
@@ -45,6 +45,9 @@ export default {
       selectedTopic.publishMessage(msg).then(ctrl => {
         console.log("publish msg ctrl:", ctrl);
       });
+    },
+    clearMessagesState(state) {
+      state = Object.assign(state, defaultState());
     }
   }, // END of mutations
 
