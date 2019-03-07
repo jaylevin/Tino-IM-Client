@@ -14,7 +14,7 @@ export function defaultState() {
 }
 
 export default {
-  state: defaultState,
+  state: defaultState(),
 
   mutations: {
     searchForTopic(state, query) {
@@ -106,6 +106,9 @@ export default {
     selectTopic(state, topicID) {
       console.log("Selecting topic", topicID);
       state.selectedTopicID = topicID;
+    },
+    clearContactsState(state) {
+      state = Object.assign(state, defaultState());
     }
   }, // END of mutations
 

@@ -2,19 +2,16 @@ import * as tinode from "@/tinode.js";
 import router from "@/router.js";
 import Vue from "vue";
 import store from "@/store/store.js";
-// All mutations related to the user's client (account)
-Vue.prototype.$tinodeClient = tClient;
-const cookieCache = window.localStorage;
-var tClient = tinode.NewClient();
 
-// if (cookieCache.getItem("token")) {
-//   console.log("found token:", cookieCache.getItem("token"));
-// }
+// All mutations related to the user's client (account)
+
+const cookieCache = window.localStorage;
 
 export function defaultState() {
   return {
-    tinodeClient: tClient,
+    tinodeClient: new tinode.NewClient(),
     profile: {
+      // wrapper from user.public
       displayName: "", // user.public.fn
       avatar: {} // user.public.photo
     }
@@ -22,13 +19,11 @@ export function defaultState() {
 }
 
 export default {
-  state: defaultState,
-  // session: cookieCache
+  state: defaultState(),
 
   mutations: {
-    // Login
+    // Login to IM server
     authenticate(state, request) {
-      state = defaultState();
       let client = state.tinodeClient;
       client
         .connect()
@@ -142,7 +137,7 @@ export default {
     },
     logout(state) {
       state.tinodeClient.disconnect();
-      router.push("");
+      router.push("/");
     },
 
     // Register a new account
@@ -175,6 +170,9 @@ export default {
     },
     setProfile(state, profile) {
       state.profile = profile;
+    },
+    clearClientState(state) {
+      state = Object.assign(state, defaultState());
     }
   }, // END of mutations
 
@@ -183,6 +181,9 @@ export default {
       context.commit("authenticate", request);
     },
     logout(context) {
+      context.commit("clearMessagesState");
+      context.commit("clearContactsState");
+      context.commit("clearClientState");
       context.commit("logout");
     },
     register(context, payload) {
