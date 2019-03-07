@@ -13,14 +13,14 @@ export default {
   mutations: {
     storeMessage(state, message) {
       let messagesCache = state.messagesCache.get(message.topic);
-      // if (typeof message.content == "object")  {
-      //   if (message.content.fmt[0].tp == "BR") {
-      //     var tempArr = Array.from(message.content.txt);
-      //     tempArr.splice(message.content.fmt[0].at, 1, '\n');
-      //     message.content = tempArr.join('');
-      //     console.log(message.content);
-      //   }
-      // }
+      if (typeof message.content == "object")  {
+        if (message.content.fmt[0].tp == "BR") {
+          var tempArr = Array.from(message.content.txt);
+          tempArr.splice(message.content.fmt[0].at, 1, '\n');
+          message.content = tempArr.join('');
+          console.log(message.content);
+        }
+      }
       if (!messagesCache) {
         // initialize new array of messages at map location state.messagesCache[topicID]
         console.log("storing message in new messagesCache:", message);
