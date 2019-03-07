@@ -15,9 +15,7 @@
 					<div class="message-head">
 				    {{ fromFN }}
 				  </div>
-				  <div class="content">
-				    {{ content }}
-												<br/><small class="timestamp">  {{ tsFormatted }} </small>
+				  <div class="content">{{ content }}<br/><small class="timestamp">  {{ tsFormatted }} </small>
 				  </div>
 			</div>
 		</div>
@@ -103,6 +101,7 @@ export default {
     padding-bottom: 8px;
     padding-left: 8px;
     background-color: rgba(0, 0, 0, 0.3);
+		// white-space: pre-wrap;
   }
   .profile-left {
     float: left;
