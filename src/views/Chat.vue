@@ -58,7 +58,7 @@ export default {
 <style scoped lang="scss">
 .chat {
   margin: 2%;
-  background-color: $grey-darker;
+  // background-color: $grey-darker;
   display: flex;
   justify-content: center;
   height: 100%;

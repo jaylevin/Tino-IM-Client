@@ -1,13 +1,14 @@
 <template>
   <div class="contacts" id="contacts">
     <div class="contacts-header">
-      <div @click="selectTopic(undefined)" class="header-text">
+      <div @click="selectTopic('')" class="header-text">
         Messages
       </div>
       <div class="plus-button">
         <a :class="{'is-active': addContactForm.isVisible}" @click="toggleAddContactForm" class="button is-success add-contact">+</a>
       </div>
     </div>
+    <div class="divider"></div>
 
 
     <div class="addContacts" v-if="addContactForm.isVisible">
@@ -152,10 +153,9 @@ li.is-active {
   -moz-box-shadow: 1px 0px 0px 0px $grey-dark;
   box-shadow: 1px 0px 0px 0px $grey-dark;
   background: rgba(54, 54, 54, 0.5);
-  min-height: 25px;
   height: 100%;
   flex-direction: column;
-  padding: 8px;
+  padding: 5px;
   overflow-y: scroll;
 
   .contacts-header {
@@ -166,6 +166,7 @@ li.is-active {
     .header-text {
       color: $accent;
       font-size: 1em;
+      margin: 10px;
       margin-right: auto;
     }
     .plus-button {

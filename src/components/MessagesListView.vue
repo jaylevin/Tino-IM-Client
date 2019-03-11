@@ -1,7 +1,7 @@
 <template>
     <div class="messages-view">
 
-      <div class="list-view">
+      <div v-if="selectedTopicID != ''" class="list-view">
         <ul id="messages" tabindex="1" class="messages-ul">
             <message class="no-select" v-for="message in messages"
                      :from="message.from"
@@ -27,7 +27,7 @@
       </div> -->
 
       <!-- Send message controls -->
-      <div class="send-message">
+      <div v-if="selectedTopicID != ''" class="send-message">
         <div class="message-input">
           <div class="field has-addons">
             <textarea rows="1" v-model="messageInput" class="textarea" placeholder="Type something..."
@@ -78,6 +78,9 @@ export default {
     messages() {
       console.log("Computing messages:", store.getters.messages);
       return store.getters.messages;
+    },
+    selectedTopicID() {
+      return store.getters.selectedTopicID;
     }
   },
   mounted() {
@@ -95,13 +98,13 @@ export default {
   methods: {
     sendMessage() {
       if (this.messageInput) {
-        console.log("Storing message", this.messageInput );
+        console.log("Storing message", this.messageInput);
         store.dispatch("publishMessage", this.messageInput);
         this.messageInput = "";
       }
     },
     newline() {
-      this.messageInput += '\n'
+      this.messageInput += "\n";
     }
   }
 };
