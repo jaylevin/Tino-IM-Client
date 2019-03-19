@@ -59,10 +59,11 @@ export default {
   justify-content: center;
   align-items: center;
   color: #dbe7f9;
-  margin-top: 6px;
+  // margin-top: 6px;
   .last-touched {
     p {
-      font-size: 0.85em;
+      font-size: 0.83em;
+      margin-right: 10px;
     }
   }
 
@@ -93,10 +94,10 @@ export default {
   }
 
   .contact-avatar {
-    margin-left: 5px;
     margin-top: 5px;
     align-self: flex-end;
     margin-right: 3px;
+    margin-left: 10px;
   }
 }
 </style>

@@ -1,14 +1,15 @@
 <template>
-    <div class="messages-view">
+    <div v-if="selectedTopicID" class="messages-view">
 
-      <div v-if="selectedTopicID != ''" class="list-view">
+      <div  class="list-view">
         <ul id="messages" tabindex="1" class="messages-ul">
-            <message class="no-select" v-for="message in messages"
-                     :from="message.from"
+            <message v-for="message in messages"
+                    :message="message">
+                     <!-- :from="message.from"
                      :ts="message.ts"
                      :content="message.content"
                      :seq="message.seq"
-                     :markedToDel="false">
+                     :markedToDel="false"> -->
             </message>
         </ul>
 
@@ -27,7 +28,7 @@
       </div> -->
 
       <!-- Send message controls -->
-      <div v-if="selectedTopicID != ''" class="send-message">
+      <div class="send-message">
         <div class="message-input">
           <div class="field has-addons">
             <textarea rows="1" v-model="messageInput" class="textarea" placeholder="Type something..."
@@ -45,7 +46,6 @@
             </a>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -112,10 +112,10 @@ export default {
 
 <style scoped lang="scss">
 .messages-view {
-  padding: 8px;
-  margin: 5px;
+  // padding: 8px;
+  // margin: 5px;
   display: flex;
-
+  background-color: $grey-darker;
   .list-view {
     display: flex;
     flex-direction: column;
@@ -128,13 +128,16 @@ export default {
 
   .send-message {
     display: flex;
-    margin-top: 15px;
-
+    margin-top: 5px;
+    margin-bottom: 15px;
+    margin-right: 10px;
+    margin-left: 10px;
     .message-input {
       width: 100%;
     }
     .send-button {
       margin: 5px;
+      margin-left: 10px;
     }
   }
 }
@@ -160,20 +163,20 @@ textarea::placeholder {
     outline: 0 !important;
   }
 }
-#messages::-webkit-scrollbar {
-  width: 12px;
-  background-color: $grey-darker;
-}
-#messages::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  background-color: $grey-darker;
-}
-#messages::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  background-color: $grey-dark;
-}
+// #messages::-webkit-scrollbar {
+//   width: 12px;
+//   background-color: $grey-dark;
+// }
+// #messages::-webkit-scrollbar-track {
+//   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+//   border-radius: 10px;
+//   background-color: $grey-dark;
+// }
+// #messages::-webkit-scrollbar-thumb {
+//   border-radius: 10px;
+//   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+//   background-color: $grey-darker;
+// }
 .delete-btn {
   float: left;
   margin-right: 5px;

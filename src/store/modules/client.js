@@ -6,7 +6,6 @@ import store from "@/store/store.js";
 // All mutations related to the user's client (account)
 
 const cookieCache = window.localStorage;
-
 export function defaultState() {
   return {
     tinodeClient: new tinode.NewClient(),

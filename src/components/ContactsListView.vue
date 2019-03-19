@@ -1,5 +1,5 @@
 <template>
-  <div class="contacts" id="contacts">
+  <div class="contacts">
     <div class="contacts-header">
       <div @click="selectTopic('')" class="header-text">
         Messages
@@ -25,11 +25,11 @@
               <a @click="addContact(result)" class="search-result">
                 <div>
                   <figure class="image is-32x32">
-                    <img class="is-rounded" :src="result.public.photo.data">
+                    <img v-if="result.public" class="is-rounded" :src="result.public.photo.data">
                   </figure>
                 </div>
                 <div>
-                  <a>{{result.public.fn}}</a>
+                  <a v-if="result.public">{{result.public.fn}}</a>
                 </div>
               </a>
             </li>
@@ -41,14 +41,15 @@
       </div>
     </div>
 
-    <div class="contacts-list-view">
-      <ul class="contacts-list" v-if="contacts.length > 0">
-        <li v-for="topic in contacts" @click="selectTopic(topic.name)" :class="{'is-active': selectedTopicID == topic.name }">
+    <div class="contacts-list-view" >
+      <transition-group v-if="contacts.length > 0" class="contacts-ul" name="contacts-list" tag="ul">
+      <!-- <ul class="contacts-ul" v-if="contacts.length > 0"> -->
+        <li v-for="topic in contacts" :key="topic.name" @click="selectTopic(topic.name)" :class="{'is-active': selectedTopicID == topic.name }">
           <a>
             <topic :topic="topic"></topic>
           </a>
         </li>
-      </ul>
+      </transition-group>
     </div>
   </div>
 
@@ -121,42 +122,45 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.contacts-list-move {
+  transition: transform 0.44s;
+}
 .divider {
   margin-top: 5px;
 }
 li.is-active {
   background-color: $grey-darker;
-  border-radius: 5px;
-  top: 3px;
-  position: relative;
+  // border-radius: 5px;
+  // top: 3px;
+  // position: relative;
 }
 
 .menu-label {
   color: $accent;
 }
-#contacts::-webkit-scrollbar {
+.contacts-list-view::-webkit-scrollbar {
   width: 12px;
-  background-color: $grey-darker;
-}
-#contacts::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
-  background-color: $grey-darker;
-}
-#contacts::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   background-color: $grey-dark;
 }
+
+.contacts-list-view::-webkit-scrollbar-track {
+  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  // border-radius: 10px;
+  background-color: rgba(54, 54, 54, 0.9);
+}
+
+.contacts-list-view::-webkit-scrollbar-thumb {
+  // border-radius: 10px;
+  // -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: $grey-dark;
+}
+
 .contacts {
   -webkit-box-shadow: 1px 0px 0px 0px $grey-dark;
   -moz-box-shadow: 1px 0px 0px 0px $grey-dark;
   box-shadow: 1px 0px 0px 0px $grey-dark;
-  background: rgba(54, 54, 54, 0.5);
-  height: 100%;
+  background: rgba(54, 54, 54, 0.9);
   flex-direction: column;
-  padding: 5px;
-  overflow-y: scroll;
 
   .contacts-header {
     display: flex;
@@ -171,18 +175,27 @@ li.is-active {
     }
     .plus-button {
       align-self: center;
+      margin-right: 10px;
+      margin-top: 5px;
     }
+  }
+
+  .contacts-list-view {
+    overflow-y: scroll;
+    height: 75vh;
   }
 }
 
 /* Popup add-contact form */
 .form-popup {
   // border: 3px solid #f1f1f1;
+  margin-left: 10px;
+  margin-right: 10px;
   label {
     color: white;
   }
   button {
-    margin: 3px;
+    margin-top: 5px;
   }
 }
 .form-container input[type="text"]:focus {

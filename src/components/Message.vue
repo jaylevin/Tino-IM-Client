@@ -1,21 +1,16 @@
 <template>
 		<div class="columns is-multiline message-view">
-			<div @mousedown="start"
-					 @mouseleave="stop"
-					 @mouseup="stop"
-					 @touchstart="start"
-					 @touchend="stop"
-					 @touchcancel="stop"
-					 class="column msg" :class="{'incoming': !isIncoming}">
-				<figure class="image is-64x64"
-								:class="{'profile-left': !isIncoming,
-												'profile-right': isIncoming}">
+			<div class="column msg" :class="{'incoming': !isIncoming}">
+				<figure class="image is-64x64" :class="{'profile-left': !isIncoming,
+																								'profile-right': isIncoming}">
 				    <img class="is-rounded" :src="avatarURI" v-model="avatarURI">
 				</figure>
 					<div class="message-head">
 				    {{ fromFN }}
 				  </div>
-				  <div class="content">{{ content }}<br/><small class="timestamp">  {{ tsFormatted }} </small>
+
+				  <div class="content">{{ message.content }}<br/>
+						<small class="timestamp">  {{ tsFormatted }} </small>
 				  </div>
 			</div>
 		</div>
@@ -24,13 +19,28 @@
 
 <script>
 import store from "@/store/store.js";
+var Tinode = require("tinode-sdk");
+
+function draftyFormatter(style, data, values, key) {
+  return values;
+}
+
 export default {
-  props: ["from", "ts", "content", "seq"],
+  props: ["message"],
   data() {
     return {
       interval: false,
       count: 0
     };
+  },
+  created() {
+    if (typeof this.message.content == "object") {
+      this.message.content = Tinode.Drafty.format(
+        this.message.content,
+        draftyFormatter,
+        this
+      );
+    }
   },
   methods: {
     start() {
@@ -52,11 +62,11 @@ export default {
   },
   computed: {
     tsFormatted() {
-      return new Date(this.ts).toLocaleTimeString();
+      return new Date(this.message.ts).toLocaleTimeString();
     },
     isIncoming() {
       let clientID = store.getters.profile.userID;
-      if (clientID == this.from) {
+      if (clientID == this.message.from) {
         return true;
       } else {
         return false;
@@ -72,7 +82,7 @@ export default {
           }
         };
       } else {
-        return store.getters.getTopic(this.from);
+        return store.getters.getTopic(this.message.from);
       }
     },
     avatarURI() {
@@ -101,7 +111,7 @@ export default {
     padding-bottom: 8px;
     padding-left: 8px;
     background-color: rgba(0, 0, 0, 0.3);
-		white-space: pre-wrap;
+    white-space: pre-wrap;
   }
   .profile-left {
     float: left;

@@ -6,7 +6,7 @@
 
       <div class="messages">
         <div class="messages-header box-shadow" v-if="selectedTopicID">
-          <p>{{selectedTopic.public.fn}}</p>
+          <p class="selectedTopicName">{{selectedTopic.public.fn}}</p>
         </div>
 
         <div class="messages-list-view">
@@ -70,7 +70,7 @@ export default {
     align-items: center;
 
     .messages-header {
-      height: 35px;
+      height: 50px;
       width: 99.33%;
       background-color: $accent;
 
@@ -80,14 +80,20 @@ export default {
         color: white;
         margin-top: 3px;
       }
+      .selectedTopicName {
+        margin-top: 10px;
+        margin-left: 10px;
+      }
     }
 
     .messages-list-view {
       width: 100%;
+      height: 90vh;
     }
   }
   .contacts {
     width: 18em;
+    height: 90vh;
   }
 }
 .box-shadow {
