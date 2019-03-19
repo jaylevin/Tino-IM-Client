@@ -85,14 +85,20 @@ export default {
   },
   mounted() {
     // scrolling ability
-    var msgs = this.$el.querySelector("#messages");
-    msgs.scrollTop = msgs.scrollHeight;
+    if (this.$el.querySelector) {
+      var msgs = this.$el.querySelector("#messages");
+      msgs.scrollTop = msgs.scrollHeight;
+    }
   },
   updated() {
     // scrolling ability
-    var msgs = this.$el.querySelector("#messages");
-    if (msgs.scrollTop != msgs.scrollHeight) {
-      msgs.scrollTop = msgs.scrollHeight;
+    if (this.$el.querySelector) {
+      var msgs = this.$el.querySelector("#messages");
+      if (msgs) {
+        if (msgs.scrollTop != msgs.scrollHeight) {
+          msgs.scrollTop = msgs.scrollHeight;
+        }
+      }
     }
   },
   methods: {
@@ -157,26 +163,12 @@ textarea::placeholder {
 .messages-ul {
   height: 70vh;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: hidden;
 
   &:focus {
     outline: 0 !important;
   }
 }
-// #messages::-webkit-scrollbar {
-//   width: 12px;
-//   background-color: $grey-dark;
-// }
-// #messages::-webkit-scrollbar-track {
-//   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-//   border-radius: 10px;
-//   background-color: $grey-dark;
-// }
-// #messages::-webkit-scrollbar-thumb {
-//   border-radius: 10px;
-//   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-//   background-color: $grey-darker;
-// }
 .delete-btn {
   float: left;
   margin-right: 5px;

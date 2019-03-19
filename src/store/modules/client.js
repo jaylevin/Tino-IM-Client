@@ -6,9 +6,10 @@ import store from "@/store/store.js";
 // All mutations related to the user's client (account)
 
 const cookieCache = window.localStorage;
+let tinodeClient = tinode.NewClient();
 export function defaultState() {
   return {
-    tinodeClient: new tinode.NewClient(),
+    tinodeClient: tinodeClient,
     profile: {
       // wrapper from user.public
       displayName: "", // user.public.fn
@@ -42,13 +43,19 @@ export default {
           var fnd = state.tinodeClient.getFndTopic();
 
           me.onMeta = function(meta) {
-            console.log("Received me.onMeta:", meta);
             if (meta.sub) {
+              // ********************************************************
+              // Iterate through contacts List:
+              // -------------------------------
+              //   - subscribe to each contact
+              //   - get past 20 messages for each topic in contactsList
+              //   - push contact to contactsList array (updates UI)
+              // ********************************************************//
               let contactsList = [];
               meta.sub.forEach(sub => {
                 let topic = state.tinodeClient.getTopic(sub.topic);
                 topic.subscribe().then(() => {
-                  topic.getMessagesPage(20, true).then(ctrl => {
+                  topic.getMessagesPage(20, false).then(ctrl => {
                     contactsList.push(topic);
                   });
                 });
@@ -59,7 +66,6 @@ export default {
           };
 
           client.onDataMessage = function(data) {
-            console.log("{data} message received:", data);
             store.dispatch("storeMessage", data);
           };
           client.onMeta = function(meta) {
@@ -111,7 +117,6 @@ export default {
     },
     logout(state) {
       state.tinodeClient.disconnect();
-      router.push("/");
     },
 
     // Register a new account

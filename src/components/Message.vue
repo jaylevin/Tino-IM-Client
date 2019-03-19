@@ -19,7 +19,6 @@
 
 <script>
 import store from "@/store/store.js";
-var Tinode = require("tinode-sdk");
 
 function draftyFormatter(style, data, values, key) {
   return values;
@@ -35,7 +34,7 @@ export default {
   },
   created() {
     if (typeof this.message.content == "object") {
-      this.message.content = Tinode.Drafty.format(
+      this.message.content = store.state.client.tinodeClient.Drafty.format(
         this.message.content,
         draftyFormatter,
         this

@@ -24,15 +24,12 @@ export default {
 
       if (!messagesCache) {
         // initialize new array of messages at map location state.messagesCache[topicID]
-        console.log("storing message in new messagesCache:", message);
         state.messagesCache.set(message.topic, new Array(message));
-
         if (message.topic == store.getters.selectedTopicID) {
           state.currentMessages = state.messagesCache.get(message.topic);
         }
       } else {
         // append message to existing messagesCache array
-        console.log("appending message to existing cache:", message);
         messagesCache.push(message);
       }
     },

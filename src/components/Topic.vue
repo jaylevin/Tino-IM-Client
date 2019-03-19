@@ -35,16 +35,9 @@ export default {
   data() {
     return {};
   },
-  created() {
-    console.log(this.topic);
-  },
-  mounted() {
-    console.log("mounteD");
-  },
-  methods: {},
   computed: {
     lastTouched() {
-      return this.topic.touched;
+      return store.state.client.tinodeClient.getTopic(this.topic.topic).touched;
     },
     topicOnline() {
       return store.state.client.tinodeClient.getTopic(this.topic.topic).online;

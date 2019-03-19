@@ -43,7 +43,6 @@
 
     <div class="contacts-list-view" >
       <transition-group v-if="contacts.length > 0" class="contacts-ul" name="contacts-list" tag="ul">
-      <!-- <ul class="contacts-ul" v-if="contacts.length > 0"> -->
         <li v-for="topic in contacts" :key="topic.name" @click="selectTopic(topic.name)" :class="{'is-active': selectedTopicID == topic.name }">
           <a>
             <topic :topic="topic"></topic>
