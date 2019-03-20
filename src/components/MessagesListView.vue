@@ -163,7 +163,7 @@ textarea::placeholder {
 .messages-ul {
   height: 70vh;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: scroll;
 
   &:focus {
     outline: 0 !important;
